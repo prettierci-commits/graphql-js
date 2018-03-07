@@ -8,8 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import * as Kind from '../language/kinds';
-import type { Field } from '../language/ast';
+import * as Kind from "../language/kinds";
+import type { Field } from "../language/ast";
 import {
   isCompositeType,
   getNullableType,
@@ -18,8 +18,8 @@ import {
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLInputObjectType,
-  GraphQLList,
-} from '../type/definition';
+  GraphQLList
+} from "../type/definition";
 import type {
   GraphQLType,
   GraphQLInputType,
@@ -27,18 +27,17 @@ import type {
   GraphQLCompositeType,
   GraphQLFieldDefinition,
   GraphQLArgument
-} from '../type/definition';
-import type { GraphQLDirective } from '../type/directives';
+} from "../type/definition";
+import type { GraphQLDirective } from "../type/directives";
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef
-} from '../type/introspection';
-import type { GraphQLSchema } from '../type/schema';
-import type { Node } from '../language/ast';
-import { typeFromAST } from './typeFromAST';
-import find from '../jsutils/find';
-
+} from "../type/introspection";
+import type { GraphQLSchema } from "../type/schema";
+import type { Node } from "../language/ast";
+import { typeFromAST } from "./typeFromAST";
+import find from "../jsutils/find";
 
 /**
  * TypeInfo is a utility class which, given a GraphQL schema, can keep track
@@ -105,7 +104,7 @@ export class TypeInfo {
   }
 
   // Flow does not yet handle this case.
-  enter(node: any/* Node */) {
+  enter(node: any /* Node */) {
     const schema = this._schema;
     switch (node.kind) {
       case Kind.SELECTION_SET:
@@ -131,11 +130,11 @@ export class TypeInfo {
         break;
       case Kind.OPERATION_DEFINITION:
         let type;
-        if (node.operation === 'query') {
+        if (node.operation === "query") {
           type = schema.getQueryType();
-        } else if (node.operation === 'mutation') {
+        } else if (node.operation === "mutation") {
           type = schema.getMutationType();
-        } else if (node.operation === 'subscription') {
+        } else if (node.operation === "subscription") {
           type = schema.getSubscriptionType();
         }
         this._typeStack.push(type);
@@ -143,9 +142,9 @@ export class TypeInfo {
       case Kind.INLINE_FRAGMENT:
       case Kind.FRAGMENT_DEFINITION:
         const typeConditionAST = node.typeCondition;
-        const outputType = typeConditionAST ?
-          typeFromAST(schema, typeConditionAST) :
-          this.getType();
+        const outputType = typeConditionAST
+          ? typeFromAST(schema, typeConditionAST)
+          : this.getType();
         this._typeStack.push(((outputType: any): GraphQLOutputType));
         break;
       case Kind.VARIABLE_DEFINITION:
@@ -229,23 +228,27 @@ function getFieldDef(
   fieldAST: Field
 ): ?GraphQLFieldDefinition {
   const name = fieldAST.name.value;
-  if (name === SchemaMetaFieldDef.name &&
-      schema.getQueryType() === parentType) {
+  if (
+    name === SchemaMetaFieldDef.name &&
+    schema.getQueryType() === parentType
+  ) {
     return SchemaMetaFieldDef;
   }
-  if (name === TypeMetaFieldDef.name &&
-      schema.getQueryType() === parentType) {
+  if (name === TypeMetaFieldDef.name && schema.getQueryType() === parentType) {
     return TypeMetaFieldDef;
   }
-  if (name === TypeNameMetaFieldDef.name &&
-      (parentType instanceof GraphQLObjectType ||
-       parentType instanceof GraphQLInterfaceType ||
-       parentType instanceof GraphQLUnionType)
+  if (
+    name === TypeNameMetaFieldDef.name &&
+    (parentType instanceof GraphQLObjectType ||
+      parentType instanceof GraphQLInterfaceType ||
+      parentType instanceof GraphQLUnionType)
   ) {
     return TypeNameMetaFieldDef;
   }
-  if (parentType instanceof GraphQLObjectType ||
-      parentType instanceof GraphQLInterfaceType) {
+  if (
+    parentType instanceof GraphQLObjectType ||
+    parentType instanceof GraphQLInterfaceType
+  ) {
     return parentType.getFields()[name];
   }
 }

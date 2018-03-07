@@ -8,13 +8,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import type { VariableDefinition } from '../../language/ast';
-import { print } from '../../language/printer';
-import { isInputType } from '../../type/definition';
-import { typeFromAST } from '../../utilities/typeFromAST';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import type { VariableDefinition } from "../../language/ast";
+import { print } from "../../language/printer";
+import { isInputType } from "../../type/definition";
+import { typeFromAST } from "../../utilities/typeFromAST";
 
 export function nonInputTypeOnVarMessage(
   variableName: string,
@@ -37,10 +36,12 @@ export function VariablesAreInputTypes(context: ValidationContext): any {
       // If the variable type is not an input type, return an error.
       if (type && !isInputType(type)) {
         const variableName = node.variable.name.value;
-        context.reportError(new GraphQLError(
-          nonInputTypeOnVarMessage(variableName, print(node.type)),
-          [ node.type ]
-        ));
+        context.reportError(
+          new GraphQLError(
+            nonInputTypeOnVarMessage(variableName, print(node.type)),
+            [node.type]
+          )
+        );
       }
     }
   };

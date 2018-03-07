@@ -8,9 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
 
 export function duplicateInputFieldMessage(fieldName: string): string {
   return `There can be only one input field named "${fieldName}".`;
@@ -39,10 +38,12 @@ export function UniqueInputFieldNames(context: ValidationContext): any {
     ObjectField(node) {
       const fieldName = node.name.value;
       if (knownNames[fieldName]) {
-        context.reportError(new GraphQLError(
-          duplicateInputFieldMessage(fieldName),
-          [ knownNames[fieldName], node.name ]
-        ));
+        context.reportError(
+          new GraphQLError(duplicateInputFieldMessage(fieldName), [
+            knownNames[fieldName],
+            node.name
+          ])
+        );
       } else {
         knownNames[fieldName] = node.name;
       }

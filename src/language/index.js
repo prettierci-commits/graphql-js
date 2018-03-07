@@ -7,11 +7,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-export { getLocation } from './location';
-import * as Kind from './kinds';
+export { getLocation } from "./location";
+import * as Kind from "./kinds";
 export { Kind };
-export { lex } from './lexer';
-export { parse, parseValue } from './parser';
-export { print } from './printer';
-export { Source } from './source';
-export { visit, visitInParallel, visitWithTypeInfo, BREAK } from './visitor';
+export { lex } from "./lexer";
+export { parse, parseValue } from "./parser";
+export { print } from "./printer";
+export { Source } from "./source";
+export { visit, visitInParallel, visitWithTypeInfo, BREAK } from "./visitor";

@@ -7,11 +7,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-import { execute } from '../execute';
-import { parse } from '../../language';
+import { execute } from "../execute";
+import { parse } from "../../language";
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -20,24 +20,22 @@ import {
   GraphQLInt,
   GraphQLString,
   GraphQLBoolean,
-  GraphQLID,
-} from '../../type';
+  GraphQLID
+} from "../../type";
 
-
-describe('Execute: Handles execution with a complex schema', () => {
-  it('executes using a schema', async () => {
-
+describe("Execute: Handles execution with a complex schema", () => {
+  it("executes using a schema", async () => {
     const BlogImage = new GraphQLObjectType({
-      name: 'Image',
+      name: "Image",
       fields: {
         url: { type: GraphQLString },
         width: { type: GraphQLInt },
-        height: { type: GraphQLInt },
+        height: { type: GraphQLInt }
       }
     });
 
     const BlogAuthor = new GraphQLObjectType({
-      name: 'Author',
+      name: "Author",
       fields: () => ({
         id: { type: GraphQLString },
         name: { type: GraphQLString },
@@ -51,7 +49,7 @@ describe('Execute: Handles execution with a complex schema', () => {
     });
 
     const BlogArticle = new GraphQLObjectType({
-      name: 'Article',
+      name: "Article",
       fields: {
         id: { type: new GraphQLNonNull(GraphQLString) },
         isPublished: { type: GraphQLBoolean },
@@ -63,7 +61,7 @@ describe('Execute: Handles execution with a complex schema', () => {
     });
 
     const BlogQuery = new GraphQLObjectType({
-      name: 'Query',
+      name: "Query",
       fields: {
         article: {
           type: BlogArticle,
@@ -95,18 +93,18 @@ describe('Execute: Handles execution with a complex schema', () => {
     function article(id) {
       return {
         id,
-        isPublished: 'true',
+        isPublished: "true",
         author: johnSmith,
-        title: 'My Article ' + id,
-        body: 'This is a post',
-        hidden: 'This data is not exposed in the schema',
-        keywords: [ 'foo', 'bar', 1, true, null ]
+        title: "My Article " + id,
+        body: "This is a post",
+        hidden: "This data is not exposed in the schema",
+        keywords: ["foo", "bar", 1, true, null]
       };
     }
 
     const johnSmith = {
       id: 123,
-      name: 'John Smith',
+      name: "John Smith",
       pic: (width, height) => getPic(123, width, height),
       recentArticle: article(1)
     };
@@ -155,51 +153,69 @@ describe('Execute: Handles execution with a complex schema', () => {
 
     // Note: this is intentionally not validating to ensure appropriate
     // behavior occurs when executing an invalid query.
-    return expect(
-      await execute(BlogSchema, parse(request))
-    ).to.deep.equal({
+    return expect(await execute(BlogSchema, parse(request))).to.deep.equal({
       data: {
         feed: [
-          { id: '1',
-            title: 'My Article 1' },
-          { id: '2',
-            title: 'My Article 2' },
-          { id: '3',
-            title: 'My Article 3' },
-          { id: '4',
-            title: 'My Article 4' },
-          { id: '5',
-            title: 'My Article 5' },
-          { id: '6',
-            title: 'My Article 6' },
-          { id: '7',
-            title: 'My Article 7' },
-          { id: '8',
-            title: 'My Article 8' },
-          { id: '9',
-            title: 'My Article 9' },
-          { id: '10',
-            title: 'My Article 10' }
+          {
+            id: "1",
+            title: "My Article 1"
+          },
+          {
+            id: "2",
+            title: "My Article 2"
+          },
+          {
+            id: "3",
+            title: "My Article 3"
+          },
+          {
+            id: "4",
+            title: "My Article 4"
+          },
+          {
+            id: "5",
+            title: "My Article 5"
+          },
+          {
+            id: "6",
+            title: "My Article 6"
+          },
+          {
+            id: "7",
+            title: "My Article 7"
+          },
+          {
+            id: "8",
+            title: "My Article 8"
+          },
+          {
+            id: "9",
+            title: "My Article 9"
+          },
+          {
+            id: "10",
+            title: "My Article 10"
+          }
         ],
         article: {
-          id: '1',
+          id: "1",
           isPublished: true,
-          title: 'My Article 1',
-          body: 'This is a post',
+          title: "My Article 1",
+          body: "This is a post",
           author: {
-            id: '123',
-            name: 'John Smith',
+            id: "123",
+            name: "John Smith",
             pic: {
-              url: 'cdn://123',
+              url: "cdn://123",
               width: 640,
               height: 480
             },
             recentArticle: {
-              id: '1',
+              id: "1",
               isPublished: true,
-              title: 'My Article 1',
-              body: 'This is a post',
-              keywords: [ 'foo', 'bar', '1', 'true', null ]
+              title: "My Article 1",
+              body: "This is a post",
+              keywords: ["foo", "bar", "1", "true", null]
             }
           }
         }

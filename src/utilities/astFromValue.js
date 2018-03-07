@@ -8,8 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import isNullish from '../jsutils/isNullish';
+import invariant from "../jsutils/invariant";
+import isNullish from "../jsutils/isNullish";
 import type {
   Value,
   IntValue,
@@ -18,8 +18,8 @@ import type {
   BooleanValue,
   EnumValue,
   ListValue,
-  ObjectValue,
-} from '../language/ast';
+  ObjectValue
+} from "../language/ast";
 import {
   NAME,
   INT,
@@ -29,17 +29,16 @@ import {
   ENUM,
   LIST,
   OBJECT,
-  OBJECT_FIELD,
-} from '../language/kinds';
-import type { GraphQLType } from '../type/definition';
+  OBJECT_FIELD
+} from "../language/kinds";
+import type { GraphQLType } from "../type/definition";
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLNonNull,
-} from '../type/definition';
-import { GraphQLFloat } from '../type/scalars';
-
+  GraphQLNonNull
+} from "../type/definition";
+import { GraphQLFloat } from "../type/scalars";
 
 /**
  * Produces a GraphQL Value AST given a JavaScript value.
@@ -56,10 +55,7 @@ import { GraphQLFloat } from '../type/scalars';
  * | Number        | Int / Float          |
  *
  */
-export function astFromValue(
-  value: mixed,
-  type?: ?GraphQLType
-): ?Value {
+export function astFromValue(value: mixed, type?: ?GraphQLType): ?Value {
   // Ensure flow knows that we treat function params as const.
   const _value = value;
 
@@ -81,7 +77,7 @@ export function astFromValue(
       kind: LIST,
       values: _value.map(item => {
         const itemValue = astFromValue(item, itemType);
-        invariant(itemValue, 'Could not create AST item.');
+        invariant(itemValue, "Could not create AST item.");
         return itemValue;
       })
     }: ListValue);
@@ -92,19 +88,19 @@ export function astFromValue(
     return astFromValue(_value, type.ofType);
   }
 
-  if (typeof _value === 'boolean') {
+  if (typeof _value === "boolean") {
     return ({ kind: BOOLEAN, value: _value }: BooleanValue);
   }
 
   // JavaScript numbers can be Float or Int values. Use the GraphQLType to
   // differentiate if available, otherwise prefer Int if the value is a
   // valid Int.
-  if (typeof _value === 'number') {
+  if (typeof _value === "number") {
     const stringNum = String(_value);
     const isIntValue = /^[0-9]+$/.test(stringNum);
     if (isIntValue) {
       if (type === GraphQLFloat) {
-        return ({ kind: FLOAT, value: stringNum + '.0' }: FloatValue);
+        return ({ kind: FLOAT, value: stringNum + ".0" }: FloatValue);
       }
       return ({ kind: INT, value: stringNum }: IntValue);
     }
@@ -113,9 +109,11 @@ export function astFromValue(
 
   // JavaScript strings can be Enum values or String values. Use the
   // GraphQLType to differentiate if possible.
-  if (typeof _value === 'string') {
-    if (type instanceof GraphQLEnumType &&
-        /^[_a-zA-Z][_a-zA-Z0-9]*$/.test(_value)) {
+  if (typeof _value === "string") {
+    if (
+      type instanceof GraphQLEnumType &&
+      /^[_a-zA-Z][_a-zA-Z0-9]*$/.test(_value)
+    ) {
       return ({ kind: ENUM, value: _value }: EnumValue);
     }
     // Use JSON stringify, which uses the same string encoding as GraphQL,
@@ -127,7 +125,7 @@ export function astFromValue(
   }
 
   // last remaining possible typeof
-  invariant(typeof _value === 'object' && _value !== null);
+  invariant(typeof _value === "object" && _value !== null);
 
   // Populate the fields of the input object by creating ASTs from each value
   // in the JavaScript object.

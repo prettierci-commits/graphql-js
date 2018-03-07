@@ -8,25 +8,19 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import keyMap from '../jsutils/keyMap';
-import invariant from '../jsutils/invariant';
-import isNullish from '../jsutils/isNullish';
-import * as Kind from '../language/kinds';
+import keyMap from "../jsutils/keyMap";
+import invariant from "../jsutils/invariant";
+import isNullish from "../jsutils/isNullish";
+import * as Kind from "../language/kinds";
 import {
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLNonNull,
-} from '../type/definition';
-import type { GraphQLInputType } from '../type/definition';
-import type {
-  Value,
-  Variable,
-  ListValue,
-  ObjectValue
-} from '../language/ast';
-
+  GraphQLNonNull
+} from "../type/definition";
+import type { GraphQLInputType } from "../type/definition";
+import type { Value, Variable, ListValue, ObjectValue } from "../language/ast";
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -73,11 +67,11 @@ export function valueFromAST(
   if (type instanceof GraphQLList) {
     const itemType = type.ofType;
     if (valueAST.kind === Kind.LIST) {
-      return (valueAST: ListValue).values.map(
-        itemAST => valueFromAST(itemAST, itemType, variables)
+      return (valueAST: ListValue).values.map(itemAST =>
+        valueFromAST(itemAST, itemType, variables)
       );
     }
-    return [ valueFromAST(valueAST, itemType, variables) ];
+    return [valueFromAST(valueAST, itemType, variables)];
   }
 
   if (type instanceof GraphQLInputObjectType) {
@@ -92,8 +86,11 @@ export function valueFromAST(
     return Object.keys(fields).reduce((obj, fieldName) => {
       const field = fields[fieldName];
       const fieldAST = fieldASTs[fieldName];
-      let fieldValue =
-        valueFromAST(fieldAST && fieldAST.value, field.type, variables);
+      let fieldValue = valueFromAST(
+        fieldAST && fieldAST.value,
+        field.type,
+        variables
+      );
       if (isNullish(fieldValue)) {
         fieldValue = field.defaultValue;
       }
@@ -106,7 +103,7 @@ export function valueFromAST(
 
   invariant(
     type instanceof GraphQLScalarType || type instanceof GraphQLEnumType,
-    'Must be input type'
+    "Must be input type"
   );
 
   const parsed = type.parseLiteral(valueAST);

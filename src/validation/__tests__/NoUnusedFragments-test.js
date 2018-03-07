@@ -7,25 +7,25 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { describe, it } from 'mocha';
-import { expectPassesRule, expectFailsRule } from './harness';
+import { describe, it } from "mocha";
+import { expectPassesRule, expectFailsRule } from "./harness";
 import {
   NoUnusedFragments,
-  unusedFragMessage,
-} from '../rules/NoUnusedFragments';
-
+  unusedFragMessage
+} from "../rules/NoUnusedFragments";
 
 function unusedFrag(fragName, line, column) {
   return {
     message: unusedFragMessage(fragName),
-    locations: [ { line, column } ],
+    locations: [{ line, column }]
   };
 }
 
-describe('Validate: No unused fragments', () => {
-
-  it('all fragment names are used', () => {
-    expectPassesRule(NoUnusedFragments, `
+describe("Validate: No unused fragments", () => {
+  it("all fragment names are used", () => {
+    expectPassesRule(
+      NoUnusedFragments,
+      `
       {
         human(id: 4) {
           ...HumanFields1
@@ -44,12 +44,14 @@ describe('Validate: No unused fragments', () => {
       fragment HumanFields3 on Human {
         name
       }
-    `);
+    `
+    );
   });
 
-
-  it('all fragment names are used by multiple operations', () => {
-    expectPassesRule(NoUnusedFragments, `
+  it("all fragment names are used by multiple operations", () => {
+    expectPassesRule(
+      NoUnusedFragments,
+      `
       query Foo {
         human(id: 4) {
           ...HumanFields1
@@ -70,11 +72,14 @@ describe('Validate: No unused fragments', () => {
       fragment HumanFields3 on Human {
         name
       }
-    `);
+    `
+    );
   });
 
-  it('contains unknown fragments', () => {
-    expectFailsRule(NoUnusedFragments, `
+  it("contains unknown fragments", () => {
+    expectFailsRule(
+      NoUnusedFragments,
+      `
       query Foo {
         human(id: 4) {
           ...HumanFields1
@@ -101,14 +106,15 @@ describe('Validate: No unused fragments', () => {
       fragment Unused2 on Human {
         name
       }
-    `, [
-      unusedFrag('Unused1', 22, 7),
-      unusedFrag('Unused2', 25, 7),
-    ]);
+    `,
+      [unusedFrag("Unused1", 22, 7), unusedFrag("Unused2", 25, 7)]
+    );
   });
 
-  it('contains unknown fragments with ref cycle', () => {
-    expectFailsRule(NoUnusedFragments, `
+  it("contains unknown fragments with ref cycle", () => {
+    expectFailsRule(
+      NoUnusedFragments,
+      `
       query Foo {
         human(id: 4) {
           ...HumanFields1
@@ -137,14 +143,15 @@ describe('Validate: No unused fragments', () => {
         name
         ...Unused1
       }
-    `, [
-      unusedFrag('Unused1', 22, 7),
-      unusedFrag('Unused2', 26, 7),
-    ]);
+    `,
+      [unusedFrag("Unused1", 22, 7), unusedFrag("Unused2", 26, 7)]
+    );
   });
 
-  it('contains unknown and undef fragments', () => {
-    expectFailsRule(NoUnusedFragments, `
+  it("contains unknown and undef fragments", () => {
+    expectFailsRule(
+      NoUnusedFragments,
+      `
       query Foo {
         human(id: 4) {
           ...bar
@@ -153,9 +160,8 @@ describe('Validate: No unused fragments', () => {
       fragment foo on Human {
         name
       }
-    `, [
-      unusedFrag('foo', 7, 7),
-    ]);
+    `,
+      [unusedFrag("foo", 7, 7)]
+    );
   });
-
 });

@@ -7,47 +7,46 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import sane from 'sane';
-import { resolve as resolvePath } from 'path';
-import { spawn } from 'child_process';
-import flowBinPath from 'flow-bin';
+import sane from "sane";
+import { resolve as resolvePath } from "path";
+import { spawn } from "child_process";
+import flowBinPath from "flow-bin";
 
-
-process.env.PATH += ':./node_modules/.bin';
+process.env.PATH += ":./node_modules/.bin";
 
 var cmd = resolvePath(__dirname);
-var srcDir = resolvePath(cmd, '../src');
+var srcDir = resolvePath(cmd, "../src");
 
 function exec(command, options) {
   return new Promise((resolve, reject) => {
     var child = spawn(command, options, {
       cmd: cmd,
       env: process.env,
-      stdio: 'inherit'
+      stdio: "inherit"
     });
-    child.on('exit', code => {
+    child.on("exit", code => {
       if (code === 0) {
         resolve(true);
       } else {
-        reject(new Error('Error code: ' + code));
+        reject(new Error("Error code: " + code));
       }
     });
   });
 }
 
-var flowServer = spawn(flowBinPath, ['server'], {
+var flowServer = spawn(flowBinPath, ["server"], {
   cmd: cmd,
   env: process.env
 });
 
-var watcher = sane(srcDir, { glob: ['**/*.js', '**/*.graphql'] })
-  .on('ready', startWatch)
-  .on('add', changeFile)
-  .on('delete', deleteFile)
-  .on('change', changeFile);
+var watcher = sane(srcDir, { glob: ["**/*.js", "**/*.graphql"] })
+  .on("ready", startWatch)
+  .on("add", changeFile)
+  .on("delete", deleteFile)
+  .on("change", changeFile);
 
-process.on('SIGINT', () => {
-  console.log(CLEARLINE + yellow(invert('stopped watching')));
+process.on("SIGINT", () => {
+  console.log(CLEARLINE + yellow(invert("stopped watching")));
   watcher.close();
   flowServer.kill();
   process.exit();
@@ -59,7 +58,7 @@ var toCheck = {};
 var timeout;
 
 function startWatch() {
-  process.stdout.write(CLEARSCREEN + green(invert('watching...')));
+  process.stdout.write(CLEARSCREEN + green(invert("watching...")));
 }
 
 function changeFile(filepath, root, stat) {
@@ -95,18 +94,21 @@ function guardedCheck() {
 }
 
 function checkFiles(filepaths) {
-  console.log('\u001b[2J');
+  console.log("\u001b[2J");
 
   return parseFiles(filepaths)
     .then(() => runTests(filepaths))
-    .then(testSuccess => lintFiles(filepaths)
-      .then(lintSuccess => typecheckStatus()
-        .then(typecheckSuccess =>
-          testSuccess && lintSuccess && typecheckSuccess)))
+    .then(testSuccess =>
+      lintFiles(filepaths).then(lintSuccess =>
+        typecheckStatus().then(
+          typecheckSuccess => testSuccess && lintSuccess && typecheckSuccess
+        )
+      )
+    )
     .catch(() => false)
     .then(success => {
       process.stdout.write(
-        '\n' + (success ? '' : '\x07') + green(invert('watching...'))
+        "\n" + (success ? "" : "\x07") + green(invert("watching..."))
       );
     });
 }
@@ -114,54 +116,68 @@ function checkFiles(filepaths) {
 // Checking steps
 
 function parseFiles(filepaths) {
-  console.log('Checking Syntax');
+  console.log("Checking Syntax");
 
-  return Promise.all(filepaths.map(filepath => {
-    if (isJS(filepath) && !isTest(filepath)) {
-      return exec('babel', [
-        '--optional', 'runtime',
-        '--out-file', '/dev/null',
-        srcPath(filepath)
-      ]);
-    }
-  }));
+  return Promise.all(
+    filepaths.map(filepath => {
+      if (isJS(filepath) && !isTest(filepath)) {
+        return exec("babel", [
+          "--optional",
+          "runtime",
+          "--out-file",
+          "/dev/null",
+          srcPath(filepath)
+        ]);
+      }
+    })
+  );
 }
 
 function runTests(filepaths) {
-  console.log('\nRunning Tests');
+  console.log("\nRunning Tests");
 
-  return exec('babel-node', [
-    './node_modules/.bin/_mocha',
-    '--reporter', 'progress',
-    '--require', './resources/mocha-bootload',
-  ].concat(
-    allTests(filepaths) ?
-      filepaths.map(srcPath) :
-      ['src/**/__tests__/**/*-test.js']
-  )).catch(() => false);
+  return exec(
+    "babel-node",
+    [
+      "./node_modules/.bin/_mocha",
+      "--reporter",
+      "progress",
+      "--require",
+      "./resources/mocha-bootload"
+    ].concat(
+      allTests(filepaths)
+        ? filepaths.map(srcPath)
+        : ["src/**/__tests__/**/*-test.js"]
+    )
+  ).catch(() => false);
 }
 
 function lintFiles(filepaths) {
-  console.log('Linting Code\n');
+  console.log("Linting Code\n");
 
-  return filepaths.reduce((prev, filepath) => prev.then(prevSuccess => {
-    if (isJS(filepath)) {
-      process.stdout.write('  ' + filepath + ' ...');
-      return exec('eslint', [srcPath(filepath)])
-        .catch(() => false)
-        .then(success => {
-          console.log(CLEARLINE + '  ' + (success ? CHECK : X)
-            + ' ' + filepath);
-          return prevSuccess && success;
-        });
-    }
-    return prevSuccess;
-  }), Promise.resolve(true));
+  return filepaths.reduce(
+    (prev, filepath) =>
+      prev.then(prevSuccess => {
+        if (isJS(filepath)) {
+          process.stdout.write("  " + filepath + " ...");
+          return exec("eslint", [srcPath(filepath)])
+            .catch(() => false)
+            .then(success => {
+              console.log(
+                CLEARLINE + "  " + (success ? CHECK : X) + " " + filepath
+              );
+              return prevSuccess && success;
+            });
+        }
+        return prevSuccess;
+      }),
+    Promise.resolve(true)
+  );
 }
 
 function typecheckStatus() {
-  console.log('\nType Checking\n');
-  return exec(flowBinPath, ['status']).catch(() => false);
+  console.log("\nType Checking\n");
+  return exec(flowBinPath, ["status"]).catch(() => false);
 }
 
 // Filepath
@@ -173,7 +189,7 @@ function srcPath(filepath) {
 // Predicates
 
 function isJS(filepath) {
-  return filepath.indexOf('.js') === filepath.length - 3;
+  return filepath.indexOf(".js") === filepath.length - 3;
 }
 
 function allTests(filepaths) {
@@ -188,10 +204,10 @@ function isTest(filepath) {
 
 // Print helpers
 
-var CLEARSCREEN = '\u001b[2J';
-var CLEARLINE = '\r\x1B[K';
-var CHECK = green('\u2713');
-var X = red('\u2718');
+var CLEARSCREEN = "\u001b[2J";
+var CLEARLINE = "\r\x1B[K";
+var CHECK = green("\u2713");
+var X = red("\u2718");
 
 function invert(str) {
   return `\u001b[7m ${str} \u001b[27m`;

@@ -8,14 +8,13 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
 
 export function undefinedVarMessage(varName: string, opName: ?string): string {
-  return opName ?
-    `Variable "$${varName}" is not defined by operation "${opName}".` :
-    `Variable "$${varName}" is not defined.`;
+  return opName
+    ? `Variable "$${varName}" is not defined by operation "${opName}".`
+    : `Variable "$${varName}" is not defined.`;
 }
 
 /**
@@ -38,13 +37,15 @@ export function NoUndefinedVariables(context: ValidationContext): any {
         usages.forEach(({ node }) => {
           const varName = node.name.value;
           if (variableNameDefined[varName] !== true) {
-            context.reportError(new GraphQLError(
-              undefinedVarMessage(
-                varName,
-                operation.name && operation.name.value
-              ),
-              [ node, operation ]
-            ));
+            context.reportError(
+              new GraphQLError(
+                undefinedVarMessage(
+                  varName,
+                  operation.name && operation.name.value
+                ),
+                [node, operation]
+              )
+            );
           }
         });
       }

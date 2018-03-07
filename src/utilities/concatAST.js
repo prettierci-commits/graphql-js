@@ -8,8 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { Document } from '../language/ast';
-
+import type { Document } from "../language/ast";
 
 /**
  * Provided a collection of ASTs, presumably each from different files,
@@ -25,7 +24,7 @@ export function concatAST(asts: Array<Document>): Document {
     }
   }
   return {
-    kind: 'Document',
-    definitions: batchDefinitions,
+    kind: "Document",
+    definitions: batchDefinitions
   };
 }

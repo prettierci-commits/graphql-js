@@ -8,16 +8,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import type { FragmentDefinition } from '../../language/ast';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import type { FragmentDefinition } from "../../language/ast";
 
 export function cycleErrorMessage(
   fragName: string,
   spreadNames: Array<string>
 ): string {
-  const via = spreadNames.length ? ' via ' + spreadNames.join(', ') : '';
+  const via = spreadNames.length ? " via " + spreadNames.join(", ") : "";
   return `Cannot spread fragment "${fragName}" within itself${via}.`;
 }
 
@@ -39,7 +38,7 @@ export function NoFragmentCycles(context: ValidationContext): any {
         detectCycleRecursive(node);
       }
       return false;
-    },
+    }
   };
 
   // This does a straight-forward DFS to find cycles.
@@ -72,13 +71,12 @@ export function NoFragmentCycles(context: ValidationContext): any {
         spreadPath.pop();
       } else {
         const cyclePath = spreadPath.slice(cycleIndex);
-        context.reportError(new GraphQLError(
-          cycleErrorMessage(
-            spreadName,
-            cyclePath.map(s => s.name.value)
-          ),
-          cyclePath.concat(spreadNode)
-        ));
+        context.reportError(
+          new GraphQLError(
+            cycleErrorMessage(spreadName, cyclePath.map(s => s.name.value)),
+            cyclePath.concat(spreadNode)
+          )
+        );
       }
     }
 

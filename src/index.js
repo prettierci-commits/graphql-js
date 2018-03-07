@@ -33,15 +33,11 @@
  */
 
 // The primary entry point into fulfilling a GraphQL request.
-export {
-  graphql
-} from './graphql';
-
+export { graphql } from "./graphql";
 
 // Create and operate on GraphQL type definitions and schema.
 export {
   GraphQLSchema,
-
   // Definitions
   GraphQLScalarType,
   GraphQLObjectType,
@@ -51,14 +47,12 @@ export {
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLNonNull,
-
   // Scalars
   GraphQLInt,
   GraphQLFloat,
   GraphQLString,
   GraphQLBoolean,
   GraphQLID,
-
   // Predicates
   isType,
   isInputType,
@@ -66,102 +60,71 @@ export {
   isLeafType,
   isCompositeType,
   isAbstractType,
-
   // Un-modifiers
   getNullableType,
-  getNamedType,
-} from './type';
-
+  getNamedType
+} from "./type";
 
 // Parse and operate on GraphQL language source files.
 export {
   Source,
   getLocation,
-
   // Parse
   parse,
   parseValue,
-
   // Print
   print,
-
   // Visit
   visit,
   visitInParallel,
   visitWithTypeInfo,
   Kind,
-  BREAK,
-} from './language';
-
+  BREAK
+} from "./language";
 
 // Execute GraphQL queries.
-export {
-  execute,
-} from './execution';
-
+export { execute } from "./execution";
 
 // Validate GraphQL queries.
-export {
-  validate,
-  specifiedRules,
-} from './validation';
-
+export { validate, specifiedRules } from "./validation";
 
 // Create and format GraphQL errors.
-export {
-  GraphQLError,
-  formatError,
-} from './error';
-
+export { GraphQLError, formatError } from "./error";
 
 // Utilities for operating on GraphQL type schema and parsed sources.
 export {
   // The GraphQL query recommended for a full schema introspection.
   introspectionQuery,
-
   // Gets the target Operation from a Document
   getOperationAST,
-
   // Build a GraphQLSchema from an introspection result.
   buildClientSchema,
-
   // Build a GraphQLSchema from a parsed GraphQL Schema language AST.
   buildASTSchema,
-
   // Extends an existing GraphQLSchema from a parsed GraphQL Schema
   // language AST.
   extendSchema,
-
   // Print a GraphQLSchema to GraphQL Schema language.
   printSchema,
-
   // Create a GraphQLType from a GraphQL language AST.
   typeFromAST,
-
   // Create a JavaScript value from a GraphQL language AST.
   valueFromAST,
-
   // Create a GraphQL language AST from a JavaScript value.
   astFromValue,
-
   // A helper to use within recursive-descent visitors which need to be aware of
   // the GraphQL type system.
   TypeInfo,
-
   // Determine if JavaScript values adhere to a GraphQL type.
   isValidJSValue,
-
   // Determine if AST values adhere to a GraphQL type.
   isValidLiteralValue,
-
   // Concatenates multiple AST together.
   concatAST,
-
   // Comparators for types
   isEqualType,
   isTypeSubTypeOf,
   doTypesOverlap,
-
   // Asserts a string is a valid GraphQL name.
-  assertValidName,
-} from './utilities';
+  assertValidName
+} from "./utilities";

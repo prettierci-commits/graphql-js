@@ -8,9 +8,9 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import isNullish from '../jsutils/isNullish';
-import { astFromValue } from '../utilities/astFromValue';
-import { print } from '../language/printer';
+import isNullish from "../jsutils/isNullish";
+import { astFromValue } from "../utilities/astFromValue";
+import { print } from "../language/printer";
 import {
   GraphQLScalarType,
   GraphQLObjectType,
@@ -19,22 +19,21 @@ import {
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLNonNull,
-} from './definition';
-import { GraphQLString, GraphQLBoolean } from './scalars';
-import { DirectiveLocation } from './directives';
-import type { GraphQLFieldDefinition } from './definition';
-
+  GraphQLNonNull
+} from "./definition";
+import { GraphQLString, GraphQLBoolean } from "./scalars";
+import { DirectiveLocation } from "./directives";
+import type { GraphQLFieldDefinition } from "./definition";
 
 export const __Schema = new GraphQLObjectType({
-  name: '__Schema',
+  name: "__Schema",
   description:
-    'A GraphQL Schema defines the capabilities of a GraphQL server. It ' +
-    'exposes all available types and directives on the server, as well as ' +
-    'the entry points for query, mutation, and subscription operations.',
+    "A GraphQL Schema defines the capabilities of a GraphQL server. It " +
+    "exposes all available types and directives on the server, as well as " +
+    "the entry points for query, mutation, and subscription operations.",
   fields: () => ({
     types: {
-      description: 'A list of all types supported by this server.',
+      description: "A list of all types supported by this server.",
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(__Type))),
       resolve(schema) {
         const typeMap = schema.getTypeMap();
@@ -42,57 +41,61 @@ export const __Schema = new GraphQLObjectType({
       }
     },
     queryType: {
-      description: 'The type that query operations will be rooted at.',
+      description: "The type that query operations will be rooted at.",
       type: new GraphQLNonNull(__Type),
       resolve: schema => schema.getQueryType()
     },
     mutationType: {
-      description: 'If this server supports mutation, the type that ' +
-                   'mutation operations will be rooted at.',
+      description:
+        "If this server supports mutation, the type that " +
+        "mutation operations will be rooted at.",
       type: __Type,
       resolve: schema => schema.getMutationType()
     },
     subscriptionType: {
-      description: 'If this server support subscription, the type that ' +
-                   'subscription operations will be rooted at.',
+      description:
+        "If this server support subscription, the type that " +
+        "subscription operations will be rooted at.",
       type: __Type,
       resolve: schema => schema.getSubscriptionType()
     },
     directives: {
-      description: 'A list of all directives supported by this server.',
-      type:
-        new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(__Directive))),
-      resolve: schema => schema.getDirectives(),
+      description: "A list of all directives supported by this server.",
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(__Directive))
+      ),
+      resolve: schema => schema.getDirectives()
     }
   })
 });
 
 export const __Directive = new GraphQLObjectType({
-  name: '__Directive',
+  name: "__Directive",
   description:
-    'A Directive provides a way to describe alternate runtime execution and ' +
-    'type validation behavior in a GraphQL document.' +
-    '\n\nIn some cases, you need to provide options to alter GraphQL’s ' +
-    'execution behavior in ways field arguments will not suffice, such as ' +
-    'conditionally including or skipping a field. Directives provide this by ' +
-    'describing additional information to the executor.',
+    "A Directive provides a way to describe alternate runtime execution and " +
+    "type validation behavior in a GraphQL document." +
+    "\n\nIn some cases, you need to provide options to alter GraphQL’s " +
+    "execution behavior in ways field arguments will not suffice, such as " +
+    "conditionally including or skipping a field. Directives provide this by " +
+    "describing additional information to the executor.",
   fields: () => ({
     name: { type: new GraphQLNonNull(GraphQLString) },
     description: { type: GraphQLString },
     locations: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(
-        __DirectiveLocation
-      )))
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(__DirectiveLocation))
+      )
     },
     args: {
-      type:
-        new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(__InputValue))),
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(__InputValue))
+      ),
       resolve: directive => directive.args || []
     },
     // NOTE: the following three fields are deprecated and are no longer part
     // of the GraphQL specification.
     onOperation: {
-      deprecationReason: 'Use `locations`.',
+      deprecationReason: "Use `locations`.",
       type: new GraphQLNonNull(GraphQLBoolean),
       resolve: d =>
         d.locations.indexOf(DirectiveLocation.QUERY) !== -1 ||
@@ -100,7 +103,7 @@ export const __Directive = new GraphQLObjectType({
         d.locations.indexOf(DirectiveLocation.SUBSCRIPTION) !== -1
     },
     onFragment: {
-      deprecationReason: 'Use `locations`.',
+      deprecationReason: "Use `locations`.",
       type: new GraphQLNonNull(GraphQLBoolean),
       resolve: d =>
         d.locations.indexOf(DirectiveLocation.FRAGMENT_SPREAD) !== -1 ||
@@ -108,61 +111,61 @@ export const __Directive = new GraphQLObjectType({
         d.locations.indexOf(DirectiveLocation.FRAGMENT_DEFINITION) !== -1
     },
     onField: {
-      deprecationReason: 'Use `locations`.',
+      deprecationReason: "Use `locations`.",
       type: new GraphQLNonNull(GraphQLBoolean),
       resolve: d => d.locations.indexOf(DirectiveLocation.FIELD) !== -1
-    },
-  }),
+    }
+  })
 });
 
 export const __DirectiveLocation = new GraphQLEnumType({
-  name: '__DirectiveLocation',
+  name: "__DirectiveLocation",
   description:
-    'A Directive can be adjacent to many parts of the GraphQL language, a ' +
-    '__DirectiveLocation describes one such possible adjacencies.',
+    "A Directive can be adjacent to many parts of the GraphQL language, a " +
+    "__DirectiveLocation describes one such possible adjacencies.",
   values: {
     QUERY: {
       value: DirectiveLocation.QUERY,
-      description: 'Location adjacent to a query operation.'
+      description: "Location adjacent to a query operation."
     },
     MUTATION: {
       value: DirectiveLocation.MUTATION,
-      description: 'Location adjacent to a mutation operation.'
+      description: "Location adjacent to a mutation operation."
     },
     SUBSCRIPTION: {
       value: DirectiveLocation.SUBSCRIPTION,
-      description: 'Location adjacent to a subscription operation.'
+      description: "Location adjacent to a subscription operation."
     },
     FIELD: {
       value: DirectiveLocation.FIELD,
-      description: 'Location adjacent to a field.'
+      description: "Location adjacent to a field."
     },
     FRAGMENT_DEFINITION: {
       value: DirectiveLocation.FRAGMENT_DEFINITION,
-      description: 'Location adjacent to a fragment definition.'
+      description: "Location adjacent to a fragment definition."
     },
     FRAGMENT_SPREAD: {
       value: DirectiveLocation.FRAGMENT_SPREAD,
-      description: 'Location adjacent to a fragment spread.'
+      description: "Location adjacent to a fragment spread."
     },
     INLINE_FRAGMENT: {
       value: DirectiveLocation.INLINE_FRAGMENT,
-      description: 'Location adjacent to an inline fragment.'
-    },
+      description: "Location adjacent to an inline fragment."
+    }
   }
 });
 
 export const __Type = new GraphQLObjectType({
-  name: '__Type',
+  name: "__Type",
   description:
-    'The fundamental unit of any GraphQL Schema is the type. There are ' +
-    'many kinds of types in GraphQL as represented by the `__TypeKind` enum.' +
-    '\n\nDepending on the kind of a type, certain fields describe ' +
-    'information about that type. Scalar types provide no information ' +
-    'beyond a name and description, while Enum types provide their values. ' +
-    'Object and Interface types provide the fields they describe. Abstract ' +
-    'types, Union and Interface, provide the Object types possible ' +
-    'at runtime. List and NonNull types compose other types.',
+    "The fundamental unit of any GraphQL Schema is the type. There are " +
+    "many kinds of types in GraphQL as represented by the `__TypeKind` enum." +
+    "\n\nDepending on the kind of a type, certain fields describe " +
+    "information about that type. Scalar types provide no information " +
+    "beyond a name and description, while Enum types provide their values. " +
+    "Object and Interface types provide the fields they describe. Abstract " +
+    "types, Union and Interface, provide the Object types possible " +
+    "at runtime. List and NonNull types compose other types.",
   fields: () => ({
     kind: {
       type: new GraphQLNonNull(__TypeKind),
@@ -184,7 +187,7 @@ export const __Type = new GraphQLObjectType({
         } else if (type instanceof GraphQLNonNull) {
           return TypeKind.NON_NULL;
         }
-        throw new Error('Unknown kind of type: ' + type);
+        throw new Error("Unknown kind of type: " + type);
       }
     },
     name: { type: GraphQLString },
@@ -195,11 +198,14 @@ export const __Type = new GraphQLObjectType({
         includeDeprecated: { type: GraphQLBoolean, defaultValue: false }
       },
       resolve(type, { includeDeprecated }) {
-        if (type instanceof GraphQLObjectType ||
-            type instanceof GraphQLInterfaceType) {
+        if (
+          type instanceof GraphQLObjectType ||
+          type instanceof GraphQLInterfaceType
+        ) {
           const fieldMap = type.getFields();
-          let fields =
-            Object.keys(fieldMap).map(fieldName => fieldMap[fieldName]);
+          let fields = Object.keys(fieldMap).map(
+            fieldName => fieldMap[fieldName]
+          );
           if (!includeDeprecated) {
             fields = fields.filter(field => !field.deprecationReason);
           }
@@ -219,8 +225,10 @@ export const __Type = new GraphQLObjectType({
     possibleTypes: {
       type: new GraphQLList(new GraphQLNonNull(__Type)),
       resolve(type, args, context, { schema }) {
-        if (type instanceof GraphQLInterfaceType ||
-            type instanceof GraphQLUnionType) {
+        if (
+          type instanceof GraphQLInterfaceType ||
+          type instanceof GraphQLUnionType
+        ) {
           return schema.getPossibleTypes(type);
         }
       }
@@ -254,35 +262,36 @@ export const __Type = new GraphQLObjectType({
 });
 
 export const __Field = new GraphQLObjectType({
-  name: '__Field',
+  name: "__Field",
   description:
-    'Object and Interface types are described by a list of Fields, each of ' +
-    'which has a name, potentially a list of arguments, and a return type.',
+    "Object and Interface types are described by a list of Fields, each of " +
+    "which has a name, potentially a list of arguments, and a return type.",
   fields: () => ({
     name: { type: new GraphQLNonNull(GraphQLString) },
     description: { type: GraphQLString },
     args: {
-      type:
-        new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(__InputValue))),
+      type: new GraphQLNonNull(
+        new GraphQLList(new GraphQLNonNull(__InputValue))
+      ),
       resolve: field => field.args || []
     },
     type: { type: new GraphQLNonNull(__Type) },
     isDeprecated: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      resolve: field => !isNullish(field.deprecationReason),
+      resolve: field => !isNullish(field.deprecationReason)
     },
     deprecationReason: {
-      type: GraphQLString,
+      type: GraphQLString
     }
   })
 });
 
 export const __InputValue = new GraphQLObjectType({
-  name: '__InputValue',
+  name: "__InputValue",
   description:
-    'Arguments provided to Fields or Directives and the input fields of an ' +
-    'InputObject are represented as Input Values which describe their type ' +
-    'and optionally a default value.',
+    "Arguments provided to Fields or Directives and the input fields of an " +
+    "InputObject are represented as Input Values which describe their type " +
+    "and optionally a default value.",
   fields: () => ({
     name: { type: new GraphQLNonNull(GraphQLString) },
     description: { type: GraphQLString },
@@ -290,88 +299,92 @@ export const __InputValue = new GraphQLObjectType({
     defaultValue: {
       type: GraphQLString,
       description:
-        'A GraphQL-formatted string representing the default value for this ' +
-        'input value.',
-      resolve: inputVal => isNullish(inputVal.defaultValue) ?
-        null :
-        print(astFromValue(inputVal.defaultValue, inputVal))
+        "A GraphQL-formatted string representing the default value for this " +
+        "input value.",
+      resolve: inputVal =>
+        isNullish(inputVal.defaultValue)
+          ? null
+          : print(astFromValue(inputVal.defaultValue, inputVal))
     }
   })
 });
 
 export const __EnumValue = new GraphQLObjectType({
-  name: '__EnumValue',
+  name: "__EnumValue",
   description:
-    'One possible value for a given Enum. Enum values are unique values, not ' +
-    'a placeholder for a string or numeric value. However an Enum value is ' +
-    'returned in a JSON response as a string.',
+    "One possible value for a given Enum. Enum values are unique values, not " +
+    "a placeholder for a string or numeric value. However an Enum value is " +
+    "returned in a JSON response as a string.",
   fields: () => ({
     name: { type: new GraphQLNonNull(GraphQLString) },
     description: { type: GraphQLString },
     isDeprecated: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      resolve: enumValue => !isNullish(enumValue.deprecationReason),
+      resolve: enumValue => !isNullish(enumValue.deprecationReason)
     },
     deprecationReason: {
-      type: GraphQLString,
+      type: GraphQLString
     }
   })
 });
 
 export const TypeKind = {
-  SCALAR: 'SCALAR',
-  OBJECT: 'OBJECT',
-  INTERFACE: 'INTERFACE',
-  UNION: 'UNION',
-  ENUM: 'ENUM',
-  INPUT_OBJECT: 'INPUT_OBJECT',
-  LIST: 'LIST',
-  NON_NULL: 'NON_NULL',
+  SCALAR: "SCALAR",
+  OBJECT: "OBJECT",
+  INTERFACE: "INTERFACE",
+  UNION: "UNION",
+  ENUM: "ENUM",
+  INPUT_OBJECT: "INPUT_OBJECT",
+  LIST: "LIST",
+  NON_NULL: "NON_NULL"
 };
 
 export const __TypeKind = new GraphQLEnumType({
-  name: '__TypeKind',
-  description: 'An enum describing what kind of type a given `__Type` is.',
+  name: "__TypeKind",
+  description: "An enum describing what kind of type a given `__Type` is.",
   values: {
     SCALAR: {
       value: TypeKind.SCALAR,
-      description: 'Indicates this type is a scalar.'
+      description: "Indicates this type is a scalar."
     },
     OBJECT: {
       value: TypeKind.OBJECT,
-      description: 'Indicates this type is an object. ' +
-                   '`fields` and `interfaces` are valid fields.'
+      description:
+        "Indicates this type is an object. " +
+        "`fields` and `interfaces` are valid fields."
     },
     INTERFACE: {
       value: TypeKind.INTERFACE,
-      description: 'Indicates this type is an interface. ' +
-                   '`fields` and `possibleTypes` are valid fields.'
+      description:
+        "Indicates this type is an interface. " +
+        "`fields` and `possibleTypes` are valid fields."
     },
     UNION: {
       value: TypeKind.UNION,
-      description: 'Indicates this type is a union. ' +
-                   '`possibleTypes` is a valid field.'
+      description:
+        "Indicates this type is a union. " + "`possibleTypes` is a valid field."
     },
     ENUM: {
       value: TypeKind.ENUM,
-      description: 'Indicates this type is an enum. ' +
-                   '`enumValues` is a valid field.'
+      description:
+        "Indicates this type is an enum. " + "`enumValues` is a valid field."
     },
     INPUT_OBJECT: {
       value: TypeKind.INPUT_OBJECT,
-      description: 'Indicates this type is an input object. ' +
-                   '`inputFields` is a valid field.'
+      description:
+        "Indicates this type is an input object. " +
+        "`inputFields` is a valid field."
     },
     LIST: {
       value: TypeKind.LIST,
-      description: 'Indicates this type is a list. ' +
-                   '`ofType` is a valid field.'
+      description:
+        "Indicates this type is a list. " + "`ofType` is a valid field."
     },
     NON_NULL: {
       value: TypeKind.NON_NULL,
-      description: 'Indicates this type is a non-null. ' +
-                   '`ofType` is a valid field.'
-    },
+      description:
+        "Indicates this type is a non-null. " + "`ofType` is a valid field."
+    }
   }
 });
 
@@ -381,28 +394,26 @@ export const __TypeKind = new GraphQLEnumType({
  */
 
 export const SchemaMetaFieldDef: GraphQLFieldDefinition = {
-  name: '__schema',
+  name: "__schema",
   type: new GraphQLNonNull(__Schema),
-  description: 'Access the current type schema of this server.',
+  description: "Access the current type schema of this server.",
   args: [],
   resolve: (source, args, context, { schema }) => schema
 };
 
 export const TypeMetaFieldDef: GraphQLFieldDefinition = {
-  name: '__type',
+  name: "__type",
   type: __Type,
-  description: 'Request the type information of a single type.',
-  args: [
-    { name: 'name', type: new GraphQLNonNull(GraphQLString) }
-  ],
+  description: "Request the type information of a single type.",
+  args: [{ name: "name", type: new GraphQLNonNull(GraphQLString) }],
   resolve: (source, { name }: { name: string }, context, { schema }) =>
     schema.getType(name)
 };
 
 export const TypeNameMetaFieldDef: GraphQLFieldDefinition = {
-  name: '__typename',
+  name: "__typename",
   type: new GraphQLNonNull(GraphQLString),
-  description: 'The name of the current Object type at runtime.',
+  description: "The name of the current Object type at runtime.",
   args: [],
   resolve: (source, args, context, { parentType }) => parentType.name
 };

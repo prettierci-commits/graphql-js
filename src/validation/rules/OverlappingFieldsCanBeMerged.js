@@ -8,32 +8,27 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import find from '../../jsutils/find';
-import type {
-  SelectionSet,
-  Field,
-  Argument,
-} from '../../language/ast';
-import { FIELD, INLINE_FRAGMENT, FRAGMENT_SPREAD } from '../../language/kinds';
-import { print } from '../../language/printer';
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import find from "../../jsutils/find";
+import type { SelectionSet, Field, Argument } from "../../language/ast";
+import { FIELD, INLINE_FRAGMENT, FRAGMENT_SPREAD } from "../../language/kinds";
+import { print } from "../../language/printer";
 import {
   getNamedType,
   isLeafType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLInterfaceType,
-} from '../../type/definition';
+  GraphQLInterfaceType
+} from "../../type/definition";
 import type {
   GraphQLNamedType,
   GraphQLOutputType,
   GraphQLCompositeType,
   GraphQLFieldDefinition
-} from '../../type/definition';
-import { typeFromAST } from '../../utilities/typeFromAST';
-
+} from "../../type/definition";
+import { typeFromAST } from "../../utilities/typeFromAST";
 
 export function fieldsConflictMessage(
   responseName: string,
@@ -44,9 +39,14 @@ export function fieldsConflictMessage(
 
 function reasonMessage(reason: ConflictReasonMessage): string {
   if (Array.isArray(reason)) {
-    return reason.map(([ responseName, subreason ]) =>
-      `subfields "${responseName}" conflict because ${reasonMessage(subreason)}`
-    ).join(' and ');
+    return reason
+      .map(
+        ([responseName, subreason]) =>
+          `subfields "${responseName}" conflict because ${reasonMessage(
+            subreason
+          )}`
+      )
+      .join(" and ");
   }
   return reason;
 }
@@ -93,8 +93,8 @@ export function OverlappingFieldsCanBeMerged(context: ValidationContext): any {
     field1: AstAndDef,
     field2: AstAndDef
   ): ?Conflict {
-    const [ parentType1, ast1, def1 ] = field1;
-    const [ parentType2, ast2, def2 ] = field2;
+    const [parentType1, ast1, def1] = field1;
+    const [parentType2, ast2, def2] = field2;
 
     // Not a pair.
     if (ast1 === ast2) {
@@ -129,9 +129,9 @@ export function OverlappingFieldsCanBeMerged(context: ValidationContext): any {
     // thus may not safely diverge.
     const fieldsAreMutuallyExclusive =
       parentFieldsAreMutuallyExclusive ||
-      parentType1 !== parentType2 &&
-      parentType1 instanceof GraphQLObjectType &&
-      parentType2 instanceof GraphQLObjectType;
+      (parentType1 !== parentType2 &&
+        parentType1 instanceof GraphQLObjectType &&
+        parentType2 instanceof GraphQLObjectType);
 
     if (!fieldsAreMutuallyExclusive) {
       // Two aliases must refer to the same field.
@@ -139,27 +139,27 @@ export function OverlappingFieldsCanBeMerged(context: ValidationContext): any {
       const name2 = ast2.name.value;
       if (name1 !== name2) {
         return [
-          [ responseName, `${name1} and ${name2} are different fields` ],
-          [ ast1 ],
-          [ ast2 ]
+          [responseName, `${name1} and ${name2} are different fields`],
+          [ast1],
+          [ast2]
         ];
       }
 
       // Two field calls must have the same arguments.
       if (!sameArguments(ast1.arguments || [], ast2.arguments || [])) {
         return [
-          [ responseName, 'they have differing arguments' ],
-          [ ast1 ],
-          [ ast2 ]
+          [responseName, "they have differing arguments"],
+          [ast1],
+          [ast2]
         ];
       }
     }
 
     if (type1 && type2 && doTypesConflict(type1, type2)) {
       return [
-        [ responseName, `they return conflicting types ${type1} and ${type2}` ],
-        [ ast1 ],
-        [ ast2 ]
+        [responseName, `they return conflicting types ${type1} and ${type2}`],
+        [ast1],
+        [ast2]
       ];
     }
 
@@ -205,14 +205,14 @@ export function OverlappingFieldsCanBeMerged(context: ValidationContext): any {
   ): ?Conflict {
     if (conflicts.length > 0) {
       return [
-        [ responseName, conflicts.map(([ reason ]) => reason) ],
+        [responseName, conflicts.map(([reason]) => reason)],
         conflicts.reduce(
-          (allFields, [ , fields1 ]) => allFields.concat(fields1),
-          [ ast1 ]
+          (allFields, [, fields1]) => allFields.concat(fields1),
+          [ast1]
         ),
         conflicts.reduce(
-          (allFields, [ , , fields2 ]) => allFields.concat(fields2),
-          [ ast2 ]
+          (allFields, [, , fields2]) => allFields.concat(fields2),
+          [ast2]
         )
       ];
     }
@@ -230,25 +230,26 @@ export function OverlappingFieldsCanBeMerged(context: ValidationContext): any {
           selectionSet
         );
         const conflicts = findConflicts(false, fieldMap);
-        conflicts.forEach(
-          ([ [ responseName, reason ], fields1, fields2 ]) =>
-            context.reportError(new GraphQLError(
+        conflicts.forEach(([[responseName, reason], fields1, fields2]) =>
+          context.reportError(
+            new GraphQLError(
               fieldsConflictMessage(responseName, reason),
               fields1.concat(fields2)
-            ))
+            )
+          )
         );
       }
     }
   };
 }
 
-type Conflict = [ ConflictReason, Array<Field>, Array<Field> ];
+type Conflict = [ConflictReason, Array<Field>, Array<Field>];
 // Field name and reason.
-type ConflictReason = [ string, ConflictReasonMessage ];
+type ConflictReason = [string, ConflictReasonMessage];
 // Reason is a string, or a nested list of conflicts.
 type ConflictReasonMessage = string | Array<ConflictReason>;
 // Tuple defining an AST in a context
-type AstAndDef = [ GraphQLCompositeType, Field, ?GraphQLFieldDefinition ];
+type AstAndDef = [GraphQLCompositeType, Field, ?GraphQLFieldDefinition];
 // Map of array of those.
 type AstAndDefCollection = { [key: string]: Array<AstAndDef> };
 
@@ -283,24 +284,24 @@ function doTypesConflict(
   type2: GraphQLOutputType
 ): boolean {
   if (type1 instanceof GraphQLList) {
-    return type2 instanceof GraphQLList ?
-      doTypesConflict(type1.ofType, type2.ofType) :
-      true;
+    return type2 instanceof GraphQLList
+      ? doTypesConflict(type1.ofType, type2.ofType)
+      : true;
   }
   if (type2 instanceof GraphQLList) {
-    return type1 instanceof GraphQLList ?
-      doTypesConflict(type1.ofType, type2.ofType) :
-      true;
+    return type1 instanceof GraphQLList
+      ? doTypesConflict(type1.ofType, type2.ofType)
+      : true;
   }
   if (type1 instanceof GraphQLNonNull) {
-    return type2 instanceof GraphQLNonNull ?
-      doTypesConflict(type1.ofType, type2.ofType) :
-      true;
+    return type2 instanceof GraphQLNonNull
+      ? doTypesConflict(type1.ofType, type2.ofType)
+      : true;
   }
   if (type2 instanceof GraphQLNonNull) {
-    return type1 instanceof GraphQLNonNull ?
-      doTypesConflict(type1.ofType, type2.ofType) :
-      true;
+    return type1 instanceof GraphQLNonNull
+      ? doTypesConflict(type1.ofType, type2.ofType)
+      : true;
   }
   if (isLeafType(type1) || isLeafType(type2)) {
     return type1 !== type2;
@@ -320,7 +321,7 @@ function collectFieldASTsAndDefs(
   context: ValidationContext,
   parentType: ?GraphQLNamedType,
   selectionSet: SelectionSet,
-  visitedFragmentNames?: {[key: string]: boolean},
+  visitedFragmentNames?: { [key: string]: boolean },
   astAndDefs?: AstAndDefCollection
 ): AstAndDefCollection {
   const _visitedFragmentNames = visitedFragmentNames || {};
@@ -331,22 +332,25 @@ function collectFieldASTsAndDefs(
       case FIELD:
         const fieldName = selection.name.value;
         let fieldDef;
-        if (parentType instanceof GraphQLObjectType ||
-            parentType instanceof GraphQLInterfaceType) {
+        if (
+          parentType instanceof GraphQLObjectType ||
+          parentType instanceof GraphQLInterfaceType
+        ) {
           fieldDef = parentType.getFields()[fieldName];
         }
-        const responseName =
-          selection.alias ? selection.alias.value : fieldName;
+        const responseName = selection.alias
+          ? selection.alias.value
+          : fieldName;
         if (!_astAndDefs[responseName]) {
           _astAndDefs[responseName] = [];
         }
-        _astAndDefs[responseName].push([ parentType, selection, fieldDef ]);
+        _astAndDefs[responseName].push([parentType, selection, fieldDef]);
         break;
       case INLINE_FRAGMENT:
         const typeCondition = selection.typeCondition;
-        const inlineFragmentType = typeCondition ?
-          typeFromAST(context.getSchema(), selection.typeCondition) :
-          parentType;
+        const inlineFragmentType = typeCondition
+          ? typeFromAST(context.getSchema(), selection.typeCondition)
+          : parentType;
         _astAndDefs = collectFieldASTsAndDefs(
           context,
           ((inlineFragmentType: any): GraphQLNamedType),
@@ -365,8 +369,10 @@ function collectFieldASTsAndDefs(
         if (!fragment) {
           continue;
         }
-        const fragmentType =
-          typeFromAST(context.getSchema(), fragment.typeCondition);
+        const fragmentType = typeFromAST(
+          context.getSchema(),
+          fragment.typeCondition
+        );
         _astAndDefs = collectFieldASTsAndDefs(
           context,
           ((fragmentType: any): GraphQLNamedType),

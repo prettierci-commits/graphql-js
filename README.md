@@ -17,8 +17,7 @@ For discussion, join [#graphql on Discord](http://join.reactiflux.com/).
 
 ## Technical Preview Contents
 
-This technical preview contains a [draft specification for GraphQL]
-(https://github.com/facebook/graphql) and a reference implementation in
+This technical preview contains a [draft specification for GraphQL](https://github.com/facebook/graphql) and a reference implementation in
 JavaScript that implements that draft, GraphQL.js.
 
 The reference implementation provides base libraries in JavaScript that would
@@ -71,16 +70,16 @@ import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString
-} from 'graphql';
+} from "graphql";
 
 var schema = new GraphQLSchema({
   query: new GraphQLObjectType({
-    name: 'RootQueryType',
+    name: "RootQueryType",
     fields: {
       hello: {
         type: GraphQLString,
         resolve() {
-          return 'world';
+          return "world";
         }
       }
     }
@@ -96,16 +95,14 @@ level [tests](src/__tests__) directory.
 Then, serve the result of a query against that type schema.
 
 ```js
-var query = '{ hello }';
+var query = "{ hello }";
 
 graphql(schema, query).then(result => {
-
   // Prints
   // {
   //   data: { hello: "world" }
   // }
   console.log(result);
-
 });
 ```
 
@@ -114,10 +111,9 @@ first ensure the query is syntactically and semantically valid before executing
 it, reporting errors otherwise.
 
 ```js
-var query = '{ boyhowdy }';
+var query = "{ boyhowdy }";
 
 graphql(schema, query).then(result => {
-
   // Prints
   // {
   //   errors: [
@@ -126,7 +122,6 @@ graphql(schema, query).then(result => {
   //   ]
   // }
   console.log(result);
-
 });
 ```
 

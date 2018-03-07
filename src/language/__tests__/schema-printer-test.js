@@ -7,51 +7,49 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { parse } from '../parser';
-import { print } from '../printer';
+import { expect } from "chai";
+import { describe, it } from "mocha";
+import { readFileSync } from "fs";
+import { join } from "path";
+import { parse } from "../parser";
+import { print } from "../printer";
 
-describe('Printer', () => {
-
-  it('prints minimal ast', () => {
+describe("Printer", () => {
+  it("prints minimal ast", () => {
     const ast = {
-      kind: 'ScalarTypeDefinition',
-      name: { kind: 'Name', value: 'foo' }
+      kind: "ScalarTypeDefinition",
+      name: { kind: "Name", value: "foo" }
     };
-    expect(print(ast)).to.equal('scalar foo');
+    expect(print(ast)).to.equal("scalar foo");
   });
 
-  it('produces helpful error messages', () => {
-    const badAst1 = { random: 'Data' };
+  it("produces helpful error messages", () => {
+    const badAst1 = { random: "Data" };
     expect(() => print(badAst1)).to.throw(
       'Invalid AST Node: {"random":"Data"}'
     );
   });
 
   const kitchenSink = readFileSync(
-    join(__dirname, '/schema-kitchen-sink.graphql'),
-    { encoding: 'utf8' }
+    join(__dirname, "/schema-kitchen-sink.graphql"),
+    { encoding: "utf8" }
   );
 
-  it('does not alter ast', () => {
+  it("does not alter ast", () => {
     const ast = parse(kitchenSink);
     const astCopy = JSON.parse(JSON.stringify(ast));
     print(ast);
     expect(ast).to.deep.equal(astCopy);
   });
 
-  it('prints kitchen sink', () => {
-
+  it("prints kitchen sink", () => {
     const ast = parse(kitchenSink);
 
     const printed = print(ast);
 
     /* eslint-disable max-len */
     expect(printed).to.equal(
-`schema {
+      `schema {
   query: QueryType
   mutation: MutationType
 }
@@ -91,7 +89,7 @@ extend type Foo {
 directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
-`);
-
+`
+    );
   });
 });

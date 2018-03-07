@@ -14,17 +14,14 @@ import {
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLList,
-  GraphQLNonNull,
-} from '../type/definition';
+  GraphQLNonNull
+} from "../type/definition";
 import type {
   GraphQLType,
   GraphQLCompositeType,
   GraphQLAbstractType
-} from '../type/definition';
-import type {
-  GraphQLSchema
-} from '../type/schema';
-
+} from "../type/definition";
+import type { GraphQLSchema } from "../type/schema";
 
 /**
  * Provided two types, return true if the types are equal (invariant).
@@ -87,12 +84,11 @@ export function isTypeSubTypeOf(
 
   // If superType type is an abstract type, maybeSubType type may be a currently
   // possible object type.
-  if (isAbstractType(superType) &&
-      maybeSubType instanceof GraphQLObjectType &&
-      schema.isPossibleType(
-        ((superType: any): GraphQLAbstractType),
-        maybeSubType
-      )) {
+  if (
+    isAbstractType(superType) &&
+    maybeSubType instanceof GraphQLObjectType &&
+    schema.isPossibleType(((superType: any): GraphQLAbstractType), maybeSubType)
+  ) {
     return true;
   }
 
@@ -122,22 +118,28 @@ export function doTypesOverlap(
     return true;
   }
 
-  if (typeA instanceof GraphQLInterfaceType ||
-      typeA instanceof GraphQLUnionType) {
-    if (_typeB instanceof GraphQLInterfaceType ||
-        _typeB instanceof GraphQLUnionType) {
+  if (
+    typeA instanceof GraphQLInterfaceType ||
+    typeA instanceof GraphQLUnionType
+  ) {
+    if (
+      _typeB instanceof GraphQLInterfaceType ||
+      _typeB instanceof GraphQLUnionType
+    ) {
       // If both types are abstract, then determine if there is any intersection
       // between possible concrete types of each.
-      return schema.getPossibleTypes(typeA).some(
-        type => schema.isPossibleType(_typeB, type)
-      );
+      return schema
+        .getPossibleTypes(typeA)
+        .some(type => schema.isPossibleType(_typeB, type));
     }
     // Determine if the latter type is a possible concrete type of the former.
     return schema.isPossibleType(typeA, _typeB);
   }
 
-  if (_typeB instanceof GraphQLInterfaceType ||
-      _typeB instanceof GraphQLUnionType) {
+  if (
+    _typeB instanceof GraphQLInterfaceType ||
+    _typeB instanceof GraphQLUnionType
+  ) {
     // Determine if the former type is a possible concrete type of the latter.
     return schema.isPossibleType(_typeB, typeA);
   }

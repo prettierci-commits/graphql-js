@@ -8,15 +8,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { Source } from './source';
+import type { Source } from "./source";
 
 /**
  * Represents a location in a Source.
  */
 type SourceLocation = {
-  line: number;
-  column: number;
-}
+  line: number,
+  column: number
+};
 
 /**
  * Takes a Source and a UTF-8 character offset, and returns the corresponding

@@ -7,15 +7,13 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
-import { concatAST } from '../concatAST';
-import { Source, parse, print } from '../../language';
+import { describe, it } from "mocha";
+import { expect } from "chai";
+import { concatAST } from "../concatAST";
+import { Source, parse, print } from "../../language";
 
-
-describe('concatAST', () => {
-
-  it('concats two ASTs together', () => {
+describe("concatAST", () => {
+  it("concats two ASTs together", () => {
     const sourceA = new Source(`
       { a, b, ...Frag }
     `);
@@ -28,10 +26,10 @@ describe('concatAST', () => {
 
     const astA = parse(sourceA);
     const astB = parse(sourceB);
-    const astC = concatAST([ astA, astB ]);
+    const astC = concatAST([astA, astB]);
 
     expect(print(astC)).to.equal(
-`{
+      `{
   a
   b
   ...Frag
@@ -40,7 +38,7 @@ describe('concatAST', () => {
 fragment Frag on T {
   c
 }
-`);
+`
+    );
   });
-
 });

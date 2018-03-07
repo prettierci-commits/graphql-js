@@ -7,85 +7,86 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { parse } from '../parser';
-import { readFileSync } from 'fs';
-import { print } from '../printer';
-import { join } from 'path';
+import { expect } from "chai";
+import { describe, it } from "mocha";
+import { parse } from "../parser";
+import { readFileSync } from "fs";
+import { print } from "../printer";
+import { join } from "path";
 
-describe('Printer', () => {
-  it('does not alter ast', () => {
+describe("Printer", () => {
+  it("does not alter ast", () => {
     const ast = parse(kitchenSink);
     const astCopy = JSON.parse(JSON.stringify(ast));
     print(ast);
     expect(ast).to.deep.equal(astCopy);
   });
 
-  it('prints minimal ast', () => {
-    const ast = { kind: 'Field', name: { kind: 'Name', value: 'foo' } };
-    expect(print(ast)).to.equal('foo');
+  it("prints minimal ast", () => {
+    const ast = { kind: "Field", name: { kind: "Name", value: "foo" } };
+    expect(print(ast)).to.equal("foo");
   });
 
-  it('produces helpful error messages', () => {
-    const badAst1 = { random: 'Data' };
+  it("produces helpful error messages", () => {
+    const badAst1 = { random: "Data" };
     expect(() => print(badAst1)).to.throw(
       'Invalid AST Node: {"random":"Data"}'
     );
   });
 
-  it('correctly prints non-query operations without name', () => {
-    const queryAstShorthanded = parse('query { id, name }');
+  it("correctly prints non-query operations without name", () => {
+    const queryAstShorthanded = parse("query { id, name }");
     expect(print(queryAstShorthanded)).to.equal(
-`{
+      `{
   id
   name
 }
-`);
+`
+    );
 
-    const mutationAst = parse('mutation { id, name }');
+    const mutationAst = parse("mutation { id, name }");
     expect(print(mutationAst)).to.equal(
-`mutation {
+      `mutation {
   id
   name
 }
-`);
+`
+    );
 
     const queryAstWithArtifacts = parse(
-      'query ($foo: TestType) @testDirective { id, name }'
+      "query ($foo: TestType) @testDirective { id, name }"
     );
     expect(print(queryAstWithArtifacts)).to.equal(
-`query ($foo: TestType) @testDirective {
+      `query ($foo: TestType) @testDirective {
   id
   name
 }
-`);
+`
+    );
 
     const mutationAstWithArtifacts = parse(
-      'mutation ($foo: TestType) @testDirective { id, name }'
+      "mutation ($foo: TestType) @testDirective { id, name }"
     );
     expect(print(mutationAstWithArtifacts)).to.equal(
-`mutation ($foo: TestType) @testDirective {
+      `mutation ($foo: TestType) @testDirective {
   id
   name
 }
-`);
+`
+    );
   });
 
+  const kitchenSink = readFileSync(join(__dirname, "/kitchen-sink.graphql"), {
+    encoding: "utf8"
+  });
 
-  const kitchenSink = readFileSync(
-    join(__dirname, '/kitchen-sink.graphql'),
-    { encoding: 'utf8' }
-  );
-
-  it('prints kitchen sink', () => {
-
+  it("prints kitchen sink", () => {
     const ast = parse(kitchenSink);
 
     const printed = print(ast);
 
     expect(printed).to.equal(
-  `query queryName($foo: ComplexType, $site: Site = MOBILE) {
+      `query queryName($foo: ComplexType, $site: Site = MOBILE) {
   whoever123is: node(id: [123, 456]) {
     id
     ... on User @defer {
@@ -135,7 +136,7 @@ fragment frag on Friend {
   unnamed(truthy: true, falsey: false)
   query
 }
-`);
-
+`
+    );
   });
 });

@@ -8,12 +8,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import type { Field } from '../../language/ast';
-import { isLeafType } from '../../type/definition';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import type { Field } from "../../language/ast";
+import { isLeafType } from "../../type/definition";
+import type { GraphQLType } from "../../type/definition";
 
 export function noSubselectionAllowedMessage(
   field: string,
@@ -42,16 +41,20 @@ export function ScalarLeafs(context: ValidationContext): any {
       if (type) {
         if (isLeafType(type)) {
           if (node.selectionSet) {
-            context.reportError(new GraphQLError(
-              noSubselectionAllowedMessage(node.name.value, type),
-              [ node.selectionSet ]
-            ));
+            context.reportError(
+              new GraphQLError(
+                noSubselectionAllowedMessage(node.name.value, type),
+                [node.selectionSet]
+              )
+            );
           }
         } else if (!node.selectionSet) {
-          context.reportError(new GraphQLError(
-            requiredSubselectionMessage(node.name.value, type),
-            [ node ]
-          ));
+          context.reportError(
+            new GraphQLError(
+              requiredSubselectionMessage(node.name.value, type),
+              [node]
+            )
+          );
         }
       }
     }

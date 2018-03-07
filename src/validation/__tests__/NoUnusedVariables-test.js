@@ -7,33 +7,36 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { describe, it } from 'mocha';
-import { expectPassesRule, expectFailsRule } from './harness';
+import { describe, it } from "mocha";
+import { expectPassesRule, expectFailsRule } from "./harness";
 import {
   NoUnusedVariables,
-  unusedVariableMessage,
-} from '../rules/NoUnusedVariables';
-
+  unusedVariableMessage
+} from "../rules/NoUnusedVariables";
 
 function unusedVar(varName, opName, line, column) {
   return {
     message: unusedVariableMessage(varName, opName),
-    locations: [ { line, column } ],
+    locations: [{ line, column }]
   };
 }
 
-describe('Validate: No unused variables', () => {
-
-  it('uses all variables', () => {
-    expectPassesRule(NoUnusedVariables, `
+describe("Validate: No unused variables", () => {
+  it("uses all variables", () => {
+    expectPassesRule(
+      NoUnusedVariables,
+      `
       query ($a: String, $b: String, $c: String) {
         field(a: $a, b: $b, c: $c)
       }
-    `);
+    `
+    );
   });
 
-  it('uses all variables deeply', () => {
-    expectPassesRule(NoUnusedVariables, `
+  it("uses all variables deeply", () => {
+    expectPassesRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String, $b: String, $c: String) {
         field(a: $a) {
           field(b: $b) {
@@ -41,11 +44,14 @@ describe('Validate: No unused variables', () => {
           }
         }
       }
-    `);
+    `
+    );
   });
 
-  it('uses all variables deeply in inline fragments', () => {
-    expectPassesRule(NoUnusedVariables, `
+  it("uses all variables deeply in inline fragments", () => {
+    expectPassesRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String, $b: String, $c: String) {
         ... on Type {
           field(a: $a) {
@@ -57,11 +63,14 @@ describe('Validate: No unused variables', () => {
           }
         }
       }
-    `);
+    `
+    );
   });
 
-  it('uses all variables in fragments', () => {
-    expectPassesRule(NoUnusedVariables, `
+  it("uses all variables in fragments", () => {
+    expectPassesRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -78,11 +87,14 @@ describe('Validate: No unused variables', () => {
       fragment FragC on Type {
         field(c: $c)
       }
-    `);
+    `
+    );
   });
 
-  it('variable used by fragment in multiple operations', () => {
-    expectPassesRule(NoUnusedVariables, `
+  it("variable used by fragment in multiple operations", () => {
+    expectPassesRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String) {
         ...FragA
       }
@@ -95,11 +107,14 @@ describe('Validate: No unused variables', () => {
       fragment FragB on Type {
         field(b: $b)
       }
-    `);
+    `
+    );
   });
 
-  it('variable used by recursive fragment', () => {
-    expectPassesRule(NoUnusedVariables, `
+  it("variable used by recursive fragment", () => {
+    expectPassesRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String) {
         ...FragA
       }
@@ -108,32 +123,38 @@ describe('Validate: No unused variables', () => {
           ...FragA
         }
       }
-    `);
+    `
+    );
   });
 
-  it('variable not used', () => {
-    expectFailsRule(NoUnusedVariables, `
+  it("variable not used", () => {
+    expectFailsRule(
+      NoUnusedVariables,
+      `
       query ($a: String, $b: String, $c: String) {
         field(a: $a, b: $b)
       }
-    `, [
-      unusedVar('c', null, 2, 38)
-    ]);
+    `,
+      [unusedVar("c", null, 2, 38)]
+    );
   });
 
-  it('multiple variables not used', () => {
-    expectFailsRule(NoUnusedVariables, `
+  it("multiple variables not used", () => {
+    expectFailsRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String, $b: String, $c: String) {
         field(b: $b)
       }
-    `, [
-      unusedVar('a', 'Foo', 2, 17),
-      unusedVar('c', 'Foo', 2, 41)
-    ]);
+    `,
+      [unusedVar("a", "Foo", 2, 17), unusedVar("c", "Foo", 2, 41)]
+    );
   });
 
-  it('variable not used in fragments', () => {
-    expectFailsRule(NoUnusedVariables, `
+  it("variable not used in fragments", () => {
+    expectFailsRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -150,13 +171,15 @@ describe('Validate: No unused variables', () => {
       fragment FragC on Type {
         field
       }
-    `, [
-      unusedVar('c', 'Foo', 2, 41)
-    ]);
+    `,
+      [unusedVar("c", "Foo", 2, 41)]
+    );
   });
 
-  it('multiple variables not used', () => {
-    expectFailsRule(NoUnusedVariables, `
+  it("multiple variables not used", () => {
+    expectFailsRule(
+      NoUnusedVariables,
+      `
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -173,14 +196,15 @@ describe('Validate: No unused variables', () => {
       fragment FragC on Type {
         field
       }
-    `, [
-      unusedVar('a', 'Foo', 2, 17),
-      unusedVar('c', 'Foo', 2, 41)
-    ]);
+    `,
+      [unusedVar("a", "Foo", 2, 17), unusedVar("c", "Foo", 2, 41)]
+    );
   });
 
-  it('variable not used by unreferenced fragment', () => {
-    expectFailsRule(NoUnusedVariables, `
+  it("variable not used by unreferenced fragment", () => {
+    expectFailsRule(
+      NoUnusedVariables,
+      `
       query Foo($b: String) {
         ...FragA
       }
@@ -190,13 +214,15 @@ describe('Validate: No unused variables', () => {
       fragment FragB on Type {
         field(b: $b)
       }
-    `, [
-      unusedVar('b', 'Foo', 2, 17)
-    ]);
+    `,
+      [unusedVar("b", "Foo", 2, 17)]
+    );
   });
 
-  it('variable not used by fragment used by other operation', () => {
-    expectFailsRule(NoUnusedVariables, `
+  it("variable not used by fragment used by other operation", () => {
+    expectFailsRule(
+      NoUnusedVariables,
+      `
       query Foo($b: String) {
         ...FragA
       }
@@ -209,10 +235,8 @@ describe('Validate: No unused variables', () => {
       fragment FragB on Type {
         field(b: $b)
       }
-    `, [
-      unusedVar('b', 'Foo', 2, 17),
-      unusedVar('a', 'Bar', 5, 17)
-    ]);
+    `,
+      [unusedVar("b", "Foo", 2, 17), unusedVar("a", "Bar", 5, 17)]
+    );
   });
-
 });

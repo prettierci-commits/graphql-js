@@ -8,9 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
 
 export function duplicateFragmentNameMessage(fragName: string): string {
   return `There can only be one fragment named "${fragName}".`;
@@ -28,10 +27,12 @@ export function UniqueFragmentNames(context: ValidationContext): any {
     FragmentDefinition(node) {
       const fragmentName = node.name.value;
       if (knownFragmentNames[fragmentName]) {
-        context.reportError(new GraphQLError(
-          duplicateFragmentNameMessage(fragmentName),
-          [ knownFragmentNames[fragmentName], node.name ]
-        ));
+        context.reportError(
+          new GraphQLError(duplicateFragmentNameMessage(fragmentName), [
+            knownFragmentNames[fragmentName],
+            node.name
+          ])
+        );
       } else {
         knownFragmentNames[fragmentName] = node.name;
       }

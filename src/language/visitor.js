@@ -10,50 +10,54 @@
 export const QueryDocumentKeys = {
   Name: [],
 
-  Document: [ 'definitions' ],
-  OperationDefinition:
-    [ 'name', 'variableDefinitions', 'directives', 'selectionSet' ],
-  VariableDefinition: [ 'variable', 'type', 'defaultValue' ],
-  Variable: [ 'name' ],
-  SelectionSet: [ 'selections' ],
-  Field: [ 'alias', 'name', 'arguments', 'directives', 'selectionSet' ],
-  Argument: [ 'name', 'value' ],
+  Document: ["definitions"],
+  OperationDefinition: [
+    "name",
+    "variableDefinitions",
+    "directives",
+    "selectionSet"
+  ],
+  VariableDefinition: ["variable", "type", "defaultValue"],
+  Variable: ["name"],
+  SelectionSet: ["selections"],
+  Field: ["alias", "name", "arguments", "directives", "selectionSet"],
+  Argument: ["name", "value"],
 
-  FragmentSpread: [ 'name', 'directives' ],
-  InlineFragment: [ 'typeCondition', 'directives', 'selectionSet' ],
-  FragmentDefinition: [ 'name', 'typeCondition', 'directives', 'selectionSet' ],
+  FragmentSpread: ["name", "directives"],
+  InlineFragment: ["typeCondition", "directives", "selectionSet"],
+  FragmentDefinition: ["name", "typeCondition", "directives", "selectionSet"],
 
   IntValue: [],
   FloatValue: [],
   StringValue: [],
   BooleanValue: [],
   EnumValue: [],
-  ListValue: [ 'values' ],
-  ObjectValue: [ 'fields' ],
-  ObjectField: [ 'name', 'value' ],
+  ListValue: ["values"],
+  ObjectValue: ["fields"],
+  ObjectField: ["name", "value"],
 
-  Directive: [ 'name', 'arguments' ],
+  Directive: ["name", "arguments"],
 
-  NamedType: [ 'name' ],
-  ListType: [ 'type' ],
-  NonNullType: [ 'type' ],
+  NamedType: ["name"],
+  ListType: ["type"],
+  NonNullType: ["type"],
 
-  SchemaDefinition: [ 'operationTypes' ],
-  OperationTypeDefinition: [ 'type' ],
+  SchemaDefinition: ["operationTypes"],
+  OperationTypeDefinition: ["type"],
 
-  ScalarTypeDefinition: [ 'name' ],
-  ObjectTypeDefinition: [ 'name', 'interfaces', 'fields' ],
-  FieldDefinition: [ 'name', 'arguments', 'type' ],
-  InputValueDefinition: [ 'name', 'type', 'defaultValue' ],
-  InterfaceTypeDefinition: [ 'name', 'fields' ],
-  UnionTypeDefinition: [ 'name', 'types' ],
-  EnumTypeDefinition: [ 'name', 'values' ],
-  EnumValueDefinition: [ 'name' ],
-  InputObjectTypeDefinition: [ 'name', 'fields' ],
+  ScalarTypeDefinition: ["name"],
+  ObjectTypeDefinition: ["name", "interfaces", "fields"],
+  FieldDefinition: ["name", "arguments", "type"],
+  InputValueDefinition: ["name", "type", "defaultValue"],
+  InterfaceTypeDefinition: ["name", "fields"],
+  UnionTypeDefinition: ["name", "types"],
+  EnumTypeDefinition: ["name", "values"],
+  EnumValueDefinition: ["name"],
+  InputObjectTypeDefinition: ["name", "fields"],
 
-  TypeExtensionDefinition: [ 'definition' ],
+  TypeExtensionDefinition: ["definition"],
 
-  DirectiveDefinition: [ 'name', 'arguments', 'locations' ],
+  DirectiveDefinition: ["name", "arguments", "locations"]
 };
 
 export const BREAK = {};
@@ -149,7 +153,7 @@ export function visit(root, visitor, keyMap) {
 
   let stack;
   let inArray = Array.isArray(root);
-  let keys = [ root ];
+  let keys = [root];
   let index = -1;
   let edits = [];
   let parent;
@@ -181,8 +185,8 @@ export function visit(root, visitor, keyMap) {
         }
         let editOffset = 0;
         for (let ii = 0; ii < edits.length; ii++) {
-          let [ editKey ] = edits[ii];
-          const [ , editValue ] = edits[ii];
+          let [editKey] = edits[ii];
+          const [, editValue] = edits[ii];
           if (inArray) {
             editKey -= editOffset;
           }
@@ -200,7 +204,7 @@ export function visit(root, visitor, keyMap) {
       inArray = stack.inArray;
       stack = stack.prev;
     } else {
-      key = parent ? inArray ? index : keys[index] : undefined;
+      key = parent ? (inArray ? index : keys[index]) : undefined;
       node = parent ? parent[key] : newRoot;
       if (node === null || node === undefined) {
         continue;
@@ -213,7 +217,7 @@ export function visit(root, visitor, keyMap) {
     let result;
     if (!Array.isArray(node)) {
       if (!isNode(node)) {
-        throw new Error('Invalid AST Node: ' + JSON.stringify(node));
+        throw new Error("Invalid AST Node: " + JSON.stringify(node));
       }
       const visitFn = getVisitFn(visitor, node.kind, isLeaving);
       if (visitFn) {
@@ -229,7 +233,7 @@ export function visit(root, visitor, keyMap) {
             continue;
           }
         } else if (result !== undefined) {
-          edits.push([ key, result ]);
+          edits.push([key, result]);
           if (!isLeaving) {
             if (isNode(result)) {
               node = result;
@@ -243,7 +247,7 @@ export function visit(root, visitor, keyMap) {
     }
 
     if (result === undefined && isEdited) {
-      edits.push([ key, node ]);
+      edits.push([key, node]);
     }
 
     if (!isLeaving) {
@@ -267,9 +271,8 @@ export function visit(root, visitor, keyMap) {
 }
 
 function isNode(maybeNode) {
-  return maybeNode && typeof maybeNode.kind === 'string';
+  return maybeNode && typeof maybeNode.kind === "string";
 }
-
 
 /**
  * Creates a new visitor instance which delegates to many visitors to run in
@@ -318,7 +321,6 @@ export function visitInParallel(visitors) {
   };
 }
 
-
 /**
  * Creates a new visitor instance which maintains a provided TypeInfo instance
  * along with visiting visitor.
@@ -351,7 +353,6 @@ export function visitWithTypeInfo(typeInfo, visitor) {
   };
 }
 
-
 /**
  * Given a visitor instance, if it is leaving or not, and a node kind, return
  * the function the visitor runtime should call.
@@ -359,25 +360,26 @@ export function visitWithTypeInfo(typeInfo, visitor) {
 function getVisitFn(visitor, kind, isLeaving) {
   const kindVisitor = visitor[kind];
   if (kindVisitor) {
-    if (!isLeaving && typeof kindVisitor === 'function') {
+    if (!isLeaving && typeof kindVisitor === "function") {
       // { Kind() {} }
       return kindVisitor;
     }
-    const kindSpecificVisitor =
-      isLeaving ? kindVisitor.leave : kindVisitor.enter;
-    if (typeof kindSpecificVisitor === 'function') {
+    const kindSpecificVisitor = isLeaving
+      ? kindVisitor.leave
+      : kindVisitor.enter;
+    if (typeof kindSpecificVisitor === "function") {
       // { Kind: { enter() {}, leave() {} } }
       return kindSpecificVisitor;
     }
   } else {
     const specificVisitor = isLeaving ? visitor.leave : visitor.enter;
     if (specificVisitor) {
-      if (typeof specificVisitor === 'function') {
+      if (typeof specificVisitor === "function") {
         // { enter() {}, leave() {} }
         return specificVisitor;
       }
       const specificKindVisitor = specificVisitor[kind];
-      if (typeof specificKindVisitor === 'function') {
+      if (typeof specificKindVisitor === "function") {
         // { enter: { Kind() {} }, leave: { Kind() {} } }
         return specificKindVisitor;
       }

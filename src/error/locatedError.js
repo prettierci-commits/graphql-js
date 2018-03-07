@@ -8,8 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { GraphQLError } from './GraphQLError';
-
+import { GraphQLError } from "./GraphQLError";
 
 /**
  * Given an arbitrary Error, presumably thrown while attempting to execute a
@@ -20,9 +19,9 @@ export function locatedError(
   originalError: ?Error,
   nodes: Array<any>
 ): GraphQLError {
-  const message = originalError ?
-    originalError.message || String(originalError) :
-    'An unknown error occurred.';
+  const message = originalError
+    ? originalError.message || String(originalError)
+    : "An unknown error occurred.";
   const stack = originalError ? originalError.stack : null;
   const error = new GraphQLError(message, nodes, stack);
   error.originalError = originalError;

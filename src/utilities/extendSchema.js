@@ -8,12 +8,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import keyMap from '../jsutils/keyMap';
-import keyValMap from '../jsutils/keyValMap';
-import { valueFromAST } from './valueFromAST';
-import { GraphQLError } from '../error/GraphQLError';
-import { GraphQLSchema } from '../type/schema';
+import invariant from "../jsutils/invariant";
+import keyMap from "../jsutils/keyMap";
+import keyValMap from "../jsutils/keyValMap";
+import { valueFromAST } from "./valueFromAST";
+import { GraphQLError } from "../error/GraphQLError";
+import { GraphQLSchema } from "../type/schema";
 
 import {
   GraphQLList,
@@ -23,8 +23,8 @@ import {
   GraphQLUnionType,
   GraphQLScalarType,
   GraphQLEnumType,
-  GraphQLInputObjectType,
-} from '../type/definition';
+  GraphQLInputObjectType
+} from "../type/definition";
 
 import {
   __Schema,
@@ -34,16 +34,16 @@ import {
   __Field,
   __InputValue,
   __EnumValue,
-  __TypeKind,
-} from '../type/introspection';
+  __TypeKind
+} from "../type/introspection";
 
 import {
   GraphQLString,
   GraphQLInt,
   GraphQLFloat,
   GraphQLBoolean,
-  GraphQLID,
-} from '../type/scalars';
+  GraphQLID
+} from "../type/scalars";
 
 import {
   DOCUMENT,
@@ -55,13 +55,10 @@ import {
   UNION_TYPE_DEFINITION,
   SCALAR_TYPE_DEFINITION,
   INPUT_OBJECT_TYPE_DEFINITION,
-  TYPE_EXTENSION_DEFINITION,
-} from '../language/kinds';
+  TYPE_EXTENSION_DEFINITION
+} from "../language/kinds";
 
-import type {
-  GraphQLType,
-  GraphQLNamedType,
-} from '../type/definition';
+import type { GraphQLType, GraphQLNamedType } from "../type/definition";
 
 import type {
   Document,
@@ -74,9 +71,8 @@ import type {
   UnionTypeDefinition,
   ScalarTypeDefinition,
   EnumTypeDefinition,
-  InputObjectTypeDefinition,
-} from '../language/ast';
-
+  InputObjectTypeDefinition
+} from "../language/ast";
 
 /**
  * Produces a new schema given an existing schema and a document which may
@@ -96,12 +92,12 @@ export function extendSchema(
 ): GraphQLSchema {
   invariant(
     schema instanceof GraphQLSchema,
-    'Must provide valid GraphQLSchema'
+    "Must provide valid GraphQLSchema"
   );
 
   invariant(
     documentAST && documentAST.kind === DOCUMENT,
-    'Must provide valid Document AST'
+    "Must provide valid Document AST"
   );
 
   // Collect the type definitions and extensions found in the document.
@@ -123,8 +119,8 @@ export function extendSchema(
         if (schema.getType(typeName)) {
           throw new GraphQLError(
             `Type "${typeName}" already exists in the schema. It cannot also ` +
-            'be defined in this type definition.',
-            [ def ]
+              "be defined in this type definition.",
+            [def]
           );
         }
         typeDefinitionMap[typeName] = def;
@@ -137,21 +133,21 @@ export function extendSchema(
         if (!existingType) {
           throw new GraphQLError(
             `Cannot extend type "${extendedTypeName}" because it does not ` +
-            'exist in the existing schema.',
-            [ def.definition ]
+              "exist in the existing schema.",
+            [def.definition]
           );
         }
         if (!(existingType instanceof GraphQLObjectType)) {
           throw new GraphQLError(
             `Cannot extend non-object type "${extendedTypeName}".`,
-            [ def.definition ]
+            [def.definition]
           );
         }
         let extensions = typeExtensionsMap[extendedTypeName];
         if (extensions) {
           extensions.push(def);
         } else {
-          extensions = [ def ];
+          extensions = [def];
         }
         typeExtensionsMap[extendedTypeName] = extensions;
         break;
@@ -160,8 +156,10 @@ export function extendSchema(
 
   // If this document contains no new types, then return the same unmodified
   // GraphQLSchema instance.
-  if (Object.keys(typeExtensionsMap).length === 0 &&
-      Object.keys(typeDefinitionMap).length === 0) {
+  if (
+    Object.keys(typeExtensionsMap).length === 0 &&
+    Object.keys(typeDefinitionMap).length === 0
+  ) {
     return schema;
   }
 
@@ -182,21 +180,21 @@ export function extendSchema(
     __Field,
     __InputValue,
     __EnumValue,
-    __TypeKind,
+    __TypeKind
   };
 
   // Get the root Query, Mutation, and Subscription types.
   const queryType = getTypeFromDef(schema.getQueryType());
 
   const existingMutationType = schema.getMutationType();
-  const mutationType = existingMutationType ?
-    getTypeFromDef(existingMutationType) :
-    null;
+  const mutationType = existingMutationType
+    ? getTypeFromDef(existingMutationType)
+    : null;
 
   const existingSubscriptionType = schema.getSubscriptionType();
-  const subscriptionType = existingSubscriptionType ?
-    getTypeFromDef(existingSubscriptionType) :
-    null;
+  const subscriptionType = existingSubscriptionType
+    ? getTypeFromDef(existingSubscriptionType)
+    : null;
 
   // Iterate through all types, getting the type definition for each, ensuring
   // that any type not directly referenced by a field will get created.
@@ -216,7 +214,7 @@ export function extendSchema(
     subscription: subscriptionType,
     types,
     // Copy directives.
-    directives: schema.getDirectives(),
+    directives: schema.getDirectives()
   });
 
   // Below are functions used for producing this schema that have closed over
@@ -224,7 +222,7 @@ export function extendSchema(
 
   function getTypeFromDef(typeDef: GraphQLNamedType): GraphQLNamedType {
     const type = _getNamedType(typeDef.name);
-    invariant(type, 'Invalid schema');
+    invariant(type, "Invalid schema");
     return type;
   }
 
@@ -233,8 +231,8 @@ export function extendSchema(
     if (!type) {
       throw new GraphQLError(
         `Unknown type: "${astNode.name.value}". Ensure that this type exists ` +
-        'either in the original schema, or is added in a type definition.',
-        [ astNode ]
+          "either in the original schema, or is added in a type definition.",
+        [astNode]
       );
     }
     return type;
@@ -283,7 +281,7 @@ export function extendSchema(
       name: type.name,
       description: type.description,
       interfaces: () => extendImplementedInterfaces(type),
-      fields: () => extendFieldMap(type),
+      fields: () => extendFieldMap(type)
     });
   }
 
@@ -294,7 +292,7 @@ export function extendSchema(
       name: type.name,
       description: type.description,
       fields: () => extendFieldMap(type),
-      resolveType: cannotExecuteClientSchema,
+      resolveType: cannotExecuteClientSchema
     });
   }
 
@@ -303,7 +301,7 @@ export function extendSchema(
       name: type.name,
       description: type.description,
       types: type.getTypes().map(getTypeFromDef),
-      resolveType: cannotExecuteClientSchema,
+      resolveType: cannotExecuteClientSchema
     });
   }
 
@@ -321,8 +319,8 @@ export function extendSchema(
           if (interfaces.some(def => def.name === interfaceName)) {
             throw new GraphQLError(
               `Type "${type.name}" already implements "${interfaceName}". ` +
-              'It cannot also be implemented in this type extension.',
-              [ namedType ]
+                "It cannot also be implemented in this type extension.",
+              [namedType]
             );
           }
           interfaces.push(getTypeFromAST(namedType));
@@ -343,7 +341,7 @@ export function extendSchema(
         deprecationReason: field.deprecationReason,
         type: extendFieldType(field.type),
         args: keyMap(field.args, arg => arg.name),
-        resolve: cannotExecuteClientSchema,
+        resolve: cannotExecuteClientSchema
       };
     });
 
@@ -356,14 +354,14 @@ export function extendSchema(
           if (oldFieldMap[fieldName]) {
             throw new GraphQLError(
               `Field "${type.name}.${fieldName}" already exists in the ` +
-              'schema. It cannot also be defined in this type extension.',
-              [ field ]
+                "schema. It cannot also be defined in this type extension.",
+              [field]
             );
           }
           newFieldMap[fieldName] = {
             type: buildFieldType(field.type),
             args: buildInputValues(field.arguments),
-            resolve: cannotExecuteClientSchema,
+            resolve: cannotExecuteClientSchema
           };
         });
       });
@@ -384,12 +382,18 @@ export function extendSchema(
 
   function buildType(typeAST: TypeDefinition): GraphQLType {
     switch (typeAST.kind) {
-      case OBJECT_TYPE_DEFINITION: return buildObjectType(typeAST);
-      case INTERFACE_TYPE_DEFINITION: return buildInterfaceType(typeAST);
-      case UNION_TYPE_DEFINITION: return buildUnionType(typeAST);
-      case SCALAR_TYPE_DEFINITION: return buildScalarType(typeAST);
-      case ENUM_TYPE_DEFINITION: return buildEnumType(typeAST);
-      case INPUT_OBJECT_TYPE_DEFINITION: return buildInputObjectType(typeAST);
+      case OBJECT_TYPE_DEFINITION:
+        return buildObjectType(typeAST);
+      case INTERFACE_TYPE_DEFINITION:
+        return buildInterfaceType(typeAST);
+      case UNION_TYPE_DEFINITION:
+        return buildUnionType(typeAST);
+      case SCALAR_TYPE_DEFINITION:
+        return buildScalarType(typeAST);
+      case ENUM_TYPE_DEFINITION:
+        return buildEnumType(typeAST);
+      case INPUT_OBJECT_TYPE_DEFINITION:
+        return buildInputObjectType(typeAST);
     }
   }
 
@@ -397,7 +401,7 @@ export function extendSchema(
     return new GraphQLObjectType({
       name: typeAST.name.value,
       interfaces: () => buildImplementedInterfaces(typeAST),
-      fields: () => buildFieldMap(typeAST),
+      fields: () => buildFieldMap(typeAST)
     });
   }
 
@@ -405,7 +409,7 @@ export function extendSchema(
     return new GraphQLInterfaceType({
       name: typeAST.name.value,
       fields: () => buildFieldMap(typeAST),
-      resolveType: cannotExecuteClientSchema,
+      resolveType: cannotExecuteClientSchema
     });
   }
 
@@ -413,7 +417,7 @@ export function extendSchema(
     return new GraphQLUnionType({
       name: typeAST.name.value,
       types: typeAST.types.map(getTypeFromAST),
-      resolveType: cannotExecuteClientSchema,
+      resolveType: cannotExecuteClientSchema
     });
   }
 
@@ -426,21 +430,21 @@ export function extendSchema(
       // scalars to always fail validation. Returning false causes them to
       // always pass validation.
       parseValue: () => false,
-      parseLiteral: () => false,
+      parseLiteral: () => false
     });
   }
 
   function buildEnumType(typeAST: EnumTypeDefinition) {
     return new GraphQLEnumType({
       name: typeAST.name.value,
-      values: keyValMap(typeAST.values, v => v.name.value, () => ({})),
+      values: keyValMap(typeAST.values, v => v.name.value, () => ({}))
     });
   }
 
   function buildInputObjectType(typeAST: InputObjectTypeDefinition) {
     return new GraphQLInputObjectType({
       name: typeAST.name.value,
-      fields: () => buildInputValues(typeAST.fields),
+      fields: () => buildInputValues(typeAST.fields)
     });
   }
 
@@ -455,7 +459,7 @@ export function extendSchema(
       field => ({
         type: buildFieldType(field.type),
         args: buildInputValues(field.arguments),
-        resolve: cannotExecuteClientSchema,
+        resolve: cannotExecuteClientSchema
       })
     );
   }
@@ -486,5 +490,5 @@ export function extendSchema(
 }
 
 function cannotExecuteClientSchema() {
-  throw new Error('Client Schema cannot be used for execution.');
+  throw new Error("Client Schema cannot be used for execution.");
 }

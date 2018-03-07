@@ -8,17 +8,16 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import isNullish from '../jsutils/isNullish';
+import invariant from "../jsutils/invariant";
+import isNullish from "../jsutils/isNullish";
 import {
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLNonNull,
-} from '../type/definition';
-import type { GraphQLInputType } from '../type/definition';
-
+  GraphQLNonNull
+} from "../type/definition";
+import type { GraphQLInputType } from "../type/definition";
 
 /**
  * Given a JavaScript value and a GraphQL type, determine if the value will be
@@ -30,9 +29,9 @@ export function isValidJSValue(value: mixed, type: GraphQLInputType): [string] {
   if (type instanceof GraphQLNonNull) {
     if (isNullish(value)) {
       if (type.ofType.name) {
-        return [ `Expected "${type.ofType.name}!", found null.` ];
+        return [`Expected "${type.ofType.name}!", found null.`];
       }
-      return [ 'Expected non-null value, found null.' ];
+      return ["Expected non-null value, found null."];
     }
     return isValidJSValue(value, type.ofType);
   }
@@ -47,9 +46,9 @@ export function isValidJSValue(value: mixed, type: GraphQLInputType): [string] {
     if (Array.isArray(value)) {
       return value.reduce((acc, item, index) => {
         const errors = isValidJSValue(item, itemType);
-        return acc.concat(errors.map(error =>
-          `In element #${index}: ${error}`
-        ));
+        return acc.concat(
+          errors.map(error => `In element #${index}: ${error}`)
+        );
       }, []);
     }
     return isValidJSValue(value, itemType);
@@ -57,8 +56,8 @@ export function isValidJSValue(value: mixed, type: GraphQLInputType): [string] {
 
   // Input objects check each defined field.
   if (type instanceof GraphQLInputObjectType) {
-    if (typeof value !== 'object' || value === null) {
-      return [ `Expected "${type.name}", found not an object.` ];
+    if (typeof value !== "object" || value === null) {
+      return [`Expected "${type.name}", found not an object.`];
     }
     const fields = type.getFields();
 
@@ -73,27 +72,27 @@ export function isValidJSValue(value: mixed, type: GraphQLInputType): [string] {
 
     // Ensure every defined field is valid.
     for (const fieldName of Object.keys(fields)) {
-      const newErrors =
-        isValidJSValue(value[fieldName], fields[fieldName].type);
-      errors.push(...(newErrors.map(error =>
-        `In field "${fieldName}": ${error}`
-      )));
+      const newErrors = isValidJSValue(
+        value[fieldName],
+        fields[fieldName].type
+      );
+      errors.push(
+        ...newErrors.map(error => `In field "${fieldName}": ${error}`)
+      );
     }
     return errors;
   }
 
   invariant(
     type instanceof GraphQLScalarType || type instanceof GraphQLEnumType,
-    'Must be input type'
+    "Must be input type"
   );
 
   // Scalar/Enum input checks to ensure the type can parse the value to
   // a non-null value.
   const parseResult = type.parseValue(value);
   if (isNullish(parseResult)) {
-    return [
-      `Expected type "${type.name}", found ${JSON.stringify(value)}.`
-    ];
+    return [`Expected type "${type.name}", found ${JSON.stringify(value)}.`];
   }
 
   return [];

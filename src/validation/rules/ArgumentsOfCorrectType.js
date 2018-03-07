@@ -8,12 +8,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import { print } from '../../language/printer';
-import { isValidLiteralValue } from '../../utilities/isValidLiteralValue';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import { print } from "../../language/printer";
+import { isValidLiteralValue } from "../../utilities/isValidLiteralValue";
+import type { GraphQLType } from "../../type/definition";
 
 export function badValueMessage(
   argName: string,
@@ -21,10 +20,8 @@ export function badValueMessage(
   value: string,
   verboseErrors?: [string]
 ): string {
-  const message = verboseErrors ? '\n' + verboseErrors.join('\n') : '';
-  return (
-    `Argument "${argName}" has invalid value ${value}.${message}`
-  );
+  const message = verboseErrors ? "\n" + verboseErrors.join("\n") : "";
+  return `Argument "${argName}" has invalid value ${value}.${message}`;
 }
 
 /**
@@ -40,15 +37,17 @@ export function ArgumentsOfCorrectType(context: ValidationContext): any {
       if (argDef) {
         const errors = isValidLiteralValue(argDef.type, argAST.value);
         if (errors && errors.length > 0) {
-          context.reportError(new GraphQLError(
-            badValueMessage(
-              argAST.name.value,
-              argDef.type,
-              print(argAST.value),
-              errors
-            ),
-            [ argAST.value ]
-          ));
+          context.reportError(
+            new GraphQLError(
+              badValueMessage(
+                argAST.name.value,
+                argDef.type,
+                print(argAST.value),
+                errors
+              ),
+              [argAST.value]
+            )
+          );
         }
       }
       return false;

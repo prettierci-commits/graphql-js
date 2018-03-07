@@ -7,12 +7,10 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-import {
-  missingFieldArgMessage
-} from '../../validation/rules/ProvidedNonNullArguments';
+import { missingFieldArgMessage } from "../../validation/rules/ProvidedNonNullArguments";
 import {
   graphql,
   GraphQLSchema,
@@ -20,16 +18,16 @@ import {
   GraphQLList,
   GraphQLInputObjectType,
   GraphQLString,
-  GraphQLEnumType,
-} from '../../';
+  GraphQLEnumType
+} from "../../";
 
-import { introspectionQuery } from '../../utilities/introspectionQuery';
+import { introspectionQuery } from "../../utilities/introspectionQuery";
 
-describe('Introspection', () => {
-  it('executes an introspection query', async () => {
+describe("Introspection", () => {
+  it("executes an introspection query", async () => {
     const EmptySchema = new GraphQLSchema({
       query: new GraphQLObjectType({
-        name: 'QueryRoot',
+        name: "QueryRoot",
         fields: {
           onlyField: { type: GraphQLString }
         }
@@ -44,36 +42,36 @@ describe('Introspection', () => {
           mutationType: null,
           subscriptionType: null,
           queryType: {
-            name: 'QueryRoot',
+            name: "QueryRoot"
           },
           types: [
             {
-              kind: 'OBJECT',
-              name: 'QueryRoot',
+              kind: "OBJECT",
+              name: "QueryRoot",
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'OBJECT',
-              name: '__Schema',
+              kind: "OBJECT",
+              name: "__Schema",
               fields: [
                 {
-                  name: 'types',
+                  name: "types",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'LIST',
+                      kind: "LIST",
                       name: null,
                       ofType: {
-                        kind: 'NON_NULL',
+                        kind: "NON_NULL",
                         name: null,
                         ofType: {
-                          kind: 'OBJECT',
-                          name: '__Type'
+                          kind: "OBJECT",
+                          name: "__Type"
                         }
                       }
                     }
@@ -82,14 +80,14 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'queryType',
+                  name: "queryType",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'OBJECT',
-                      name: '__Type',
+                      kind: "OBJECT",
+                      name: "__Type",
                       ofType: null
                     }
                   },
@@ -97,42 +95,42 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'mutationType',
+                  name: "mutationType",
                   args: [],
                   type: {
-                    kind: 'OBJECT',
-                    name: '__Type',
+                    kind: "OBJECT",
+                    name: "__Type",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'subscriptionType',
+                  name: "subscriptionType",
                   args: [],
                   type: {
-                    kind: 'OBJECT',
-                    name: '__Type',
+                    kind: "OBJECT",
+                    name: "__Type",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'directives',
+                  name: "directives",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'LIST',
+                      kind: "LIST",
                       name: null,
                       ofType: {
-                        kind: 'NON_NULL',
+                        kind: "NON_NULL",
                         name: null,
                         ofType: {
-                          kind: 'OBJECT',
-                          name: '__Directive'
+                          kind: "OBJECT",
+                          name: "__Directive"
                         }
                       }
                     }
@@ -144,21 +142,21 @@ describe('Introspection', () => {
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'OBJECT',
-              name: '__Type',
+              kind: "OBJECT",
+              name: "__Type",
               fields: [
                 {
-                  name: 'kind',
+                  name: "kind",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'ENUM',
-                      name: '__TypeKind',
+                      kind: "ENUM",
+                      name: "__TypeKind",
                       ofType: null
                     }
                   },
@@ -166,49 +164,49 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'name',
+                  name: "name",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'description',
+                  name: "description",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'fields',
+                  name: "fields",
                   args: [
                     {
-                      name: 'includeDeprecated',
+                      name: "includeDeprecated",
                       type: {
-                        kind: 'SCALAR',
-                        name: 'Boolean',
+                        kind: "SCALAR",
+                        name: "Boolean",
                         ofType: null
                       },
-                      defaultValue: 'false'
+                      defaultValue: "false"
                     }
                   ],
                   type: {
-                    kind: 'LIST',
+                    kind: "LIST",
                     name: null,
                     ofType: {
-                      kind: 'NON_NULL',
+                      kind: "NON_NULL",
                       name: null,
                       ofType: {
-                        kind: 'OBJECT',
-                        name: '__Field',
+                        kind: "OBJECT",
+                        name: "__Field",
                         ofType: null
                       }
                     }
@@ -217,17 +215,17 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'interfaces',
+                  name: "interfaces",
                   args: [],
                   type: {
-                    kind: 'LIST',
+                    kind: "LIST",
                     name: null,
                     ofType: {
-                      kind: 'NON_NULL',
+                      kind: "NON_NULL",
                       name: null,
                       ofType: {
-                        kind: 'OBJECT',
-                        name: '__Type',
+                        kind: "OBJECT",
+                        name: "__Type",
                         ofType: null
                       }
                     }
@@ -236,17 +234,17 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'possibleTypes',
+                  name: "possibleTypes",
                   args: [],
                   type: {
-                    kind: 'LIST',
+                    kind: "LIST",
                     name: null,
                     ofType: {
-                      kind: 'NON_NULL',
+                      kind: "NON_NULL",
                       name: null,
                       ofType: {
-                        kind: 'OBJECT',
-                        name: '__Type',
+                        kind: "OBJECT",
+                        name: "__Type",
                         ofType: null
                       }
                     }
@@ -255,27 +253,27 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'enumValues',
+                  name: "enumValues",
                   args: [
                     {
-                      name: 'includeDeprecated',
+                      name: "includeDeprecated",
                       type: {
-                        kind: 'SCALAR',
-                        name: 'Boolean',
+                        kind: "SCALAR",
+                        name: "Boolean",
                         ofType: null
                       },
-                      defaultValue: 'false'
+                      defaultValue: "false"
                     }
                   ],
                   type: {
-                    kind: 'LIST',
+                    kind: "LIST",
                     name: null,
                     ofType: {
-                      kind: 'NON_NULL',
+                      kind: "NON_NULL",
                       name: null,
                       ofType: {
-                        kind: 'OBJECT',
-                        name: '__EnumValue',
+                        kind: "OBJECT",
+                        name: "__EnumValue",
                         ofType: null
                       }
                     }
@@ -284,17 +282,17 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'inputFields',
+                  name: "inputFields",
                   args: [],
                   type: {
-                    kind: 'LIST',
+                    kind: "LIST",
                     name: null,
                     ofType: {
-                      kind: 'NON_NULL',
+                      kind: "NON_NULL",
                       name: null,
                       ofType: {
-                        kind: 'OBJECT',
-                        name: '__InputValue',
+                        kind: "OBJECT",
+                        name: "__InputValue",
                         ofType: null
                       }
                     }
@@ -303,11 +301,11 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'ofType',
+                  name: "ofType",
                   args: [],
                   type: {
-                    kind: 'OBJECT',
-                    name: '__Type',
+                    kind: "OBJECT",
+                    name: "__Type",
                     ofType: null
                   },
                   isDeprecated: false,
@@ -317,89 +315,89 @@ describe('Introspection', () => {
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'ENUM',
-              name: '__TypeKind',
+              kind: "ENUM",
+              name: "__TypeKind",
               fields: null,
               inputFields: null,
               interfaces: null,
               enumValues: [
                 {
-                  name: 'SCALAR',
+                  name: "SCALAR",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'OBJECT',
+                  name: "OBJECT",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'INTERFACE',
+                  name: "INTERFACE",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'UNION',
+                  name: "UNION",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'ENUM',
+                  name: "ENUM",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'INPUT_OBJECT',
+                  name: "INPUT_OBJECT",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'LIST',
+                  name: "LIST",
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'NON_NULL',
+                  name: "NON_NULL",
                   isDeprecated: false,
                   deprecationReason: null
                 }
               ],
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'SCALAR',
-              name: 'String',
+              kind: "SCALAR",
+              name: "String",
               fields: null,
               inputFields: null,
               interfaces: null,
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'SCALAR',
-              name: 'Boolean',
+              kind: "SCALAR",
+              name: "Boolean",
               fields: null,
               inputFields: null,
               interfaces: null,
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'OBJECT',
-              name: '__Field',
+              kind: "OBJECT",
+              name: "__Field",
               fields: [
                 {
-                  name: 'name',
+                  name: "name",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'String',
+                      kind: "SCALAR",
+                      name: "String",
                       ofType: null
                     }
                   },
@@ -407,31 +405,31 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'description',
+                  name: "description",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'args',
+                  name: "args",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'LIST',
+                      kind: "LIST",
                       name: null,
                       ofType: {
-                        kind: 'NON_NULL',
+                        kind: "NON_NULL",
                         name: null,
                         ofType: {
-                          kind: 'OBJECT',
-                          name: '__InputValue'
+                          kind: "OBJECT",
+                          name: "__InputValue"
                         }
                       }
                     }
@@ -440,14 +438,14 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'type',
+                  name: "type",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'OBJECT',
-                      name: '__Type',
+                      kind: "OBJECT",
+                      name: "__Type",
                       ofType: null
                     }
                   },
@@ -455,14 +453,14 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'isDeprecated',
+                  name: "isDeprecated",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
+                      kind: "SCALAR",
+                      name: "Boolean",
                       ofType: null
                     }
                   },
@@ -470,11 +468,11 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'deprecationReason',
+                  name: "deprecationReason",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
@@ -484,21 +482,21 @@ describe('Introspection', () => {
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'OBJECT',
-              name: '__InputValue',
+              kind: "OBJECT",
+              name: "__InputValue",
               fields: [
                 {
-                  name: 'name',
+                  name: "name",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'String',
+                      kind: "SCALAR",
+                      name: "String",
                       ofType: null
                     }
                   },
@@ -506,25 +504,25 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'description',
+                  name: "description",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'type',
+                  name: "type",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'OBJECT',
-                      name: '__Type',
+                      kind: "OBJECT",
+                      name: "__Type",
                       ofType: null
                     }
                   },
@@ -532,11 +530,11 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'defaultValue',
+                  name: "defaultValue",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
@@ -546,21 +544,21 @@ describe('Introspection', () => {
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'OBJECT',
-              name: '__EnumValue',
+              kind: "OBJECT",
+              name: "__EnumValue",
               fields: [
                 {
-                  name: 'name',
+                  name: "name",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'String',
+                      kind: "SCALAR",
+                      name: "String",
                       ofType: null
                     }
                   },
@@ -568,25 +566,25 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'description',
+                  name: "description",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'isDeprecated',
+                  name: "isDeprecated",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
+                      kind: "SCALAR",
+                      name: "Boolean",
                       ofType: null
                     }
                   },
@@ -594,11 +592,11 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'deprecationReason',
+                  name: "deprecationReason",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
@@ -608,21 +606,21 @@ describe('Introspection', () => {
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'OBJECT',
-              name: '__Directive',
+              kind: "OBJECT",
+              name: "__Directive",
               fields: [
                 {
-                  name: 'name',
+                  name: "name",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'String',
+                      kind: "SCALAR",
+                      name: "String",
                       ofType: null
                     }
                   },
@@ -630,31 +628,31 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'description',
+                  name: "description",
                   args: [],
                   type: {
-                    kind: 'SCALAR',
-                    name: 'String',
+                    kind: "SCALAR",
+                    name: "String",
                     ofType: null
                   },
                   isDeprecated: false,
                   deprecationReason: null
                 },
                 {
-                  name: 'locations',
+                  name: "locations",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'LIST',
+                      kind: "LIST",
                       name: null,
                       ofType: {
-                        kind: 'NON_NULL',
+                        kind: "NON_NULL",
                         name: null,
                         ofType: {
-                          kind: 'ENUM',
-                          name: '__DirectiveLocation'
+                          kind: "ENUM",
+                          name: "__DirectiveLocation"
                         }
                       }
                     }
@@ -663,20 +661,20 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'args',
+                  name: "args",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'LIST',
+                      kind: "LIST",
                       name: null,
                       ofType: {
-                        kind: 'NON_NULL',
+                        kind: "NON_NULL",
                         name: null,
                         ofType: {
-                          kind: 'OBJECT',
-                          name: '__InputValue'
+                          kind: "OBJECT",
+                          name: "__InputValue"
                         }
                       }
                     }
@@ -685,133 +683,133 @@ describe('Introspection', () => {
                   deprecationReason: null
                 },
                 {
-                  name: 'onOperation',
+                  name: "onOperation",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
-                      ofType: null,
-                    },
+                      kind: "SCALAR",
+                      name: "Boolean",
+                      ofType: null
+                    }
                   },
                   isDeprecated: true,
-                  deprecationReason: 'Use `locations`.'
+                  deprecationReason: "Use `locations`."
                 },
                 {
-                  name: 'onFragment',
+                  name: "onFragment",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
-                      ofType: null,
-                    },
+                      kind: "SCALAR",
+                      name: "Boolean",
+                      ofType: null
+                    }
                   },
                   isDeprecated: true,
-                  deprecationReason: 'Use `locations`.'
+                  deprecationReason: "Use `locations`."
                 },
                 {
-                  name: 'onField',
+                  name: "onField",
                   args: [],
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
-                      ofType: null,
-                    },
+                      kind: "SCALAR",
+                      name: "Boolean",
+                      ofType: null
+                    }
                   },
                   isDeprecated: true,
-                  deprecationReason: 'Use `locations`.'
+                  deprecationReason: "Use `locations`."
                 }
               ],
               inputFields: null,
               interfaces: [],
               enumValues: null,
-              possibleTypes: null,
+              possibleTypes: null
             },
             {
-              kind: 'ENUM',
-              name: '__DirectiveLocation',
+              kind: "ENUM",
+              name: "__DirectiveLocation",
               fields: null,
               inputFields: null,
               interfaces: null,
               enumValues: [
                 {
-                  name: 'QUERY',
+                  name: "QUERY",
                   isDeprecated: false
                 },
                 {
-                  name: 'MUTATION',
+                  name: "MUTATION",
                   isDeprecated: false
                 },
                 {
-                  name: 'SUBSCRIPTION',
+                  name: "SUBSCRIPTION",
                   isDeprecated: false
                 },
                 {
-                  name: 'FIELD',
+                  name: "FIELD",
                   isDeprecated: false
                 },
                 {
-                  name: 'FRAGMENT_DEFINITION',
+                  name: "FRAGMENT_DEFINITION",
                   isDeprecated: false
                 },
                 {
-                  name: 'FRAGMENT_SPREAD',
+                  name: "FRAGMENT_SPREAD",
                   isDeprecated: false
                 },
                 {
-                  name: 'INLINE_FRAGMENT',
+                  name: "INLINE_FRAGMENT",
                   isDeprecated: false
-                },
+                }
               ],
-              possibleTypes: null,
+              possibleTypes: null
             }
           ],
           directives: [
             {
-              name: 'include',
-              locations: [ 'FIELD', 'FRAGMENT_SPREAD', 'INLINE_FRAGMENT' ],
+              name: "include",
+              locations: ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
               args: [
                 {
                   defaultValue: null,
-                  name: 'if',
+                  name: "if",
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
+                      kind: "SCALAR",
+                      name: "Boolean",
                       ofType: null
                     }
                   }
                 }
-              ],
+              ]
             },
             {
-              name: 'skip',
-              locations: [ 'FIELD', 'FRAGMENT_SPREAD', 'INLINE_FRAGMENT' ],
+              name: "skip",
+              locations: ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
               args: [
                 {
                   defaultValue: null,
-                  name: 'if',
+                  name: "if",
                   type: {
-                    kind: 'NON_NULL',
+                    kind: "NON_NULL",
                     name: null,
                     ofType: {
-                      kind: 'SCALAR',
-                      name: 'Boolean',
+                      kind: "SCALAR",
+                      name: "Boolean",
                       ofType: null
                     }
                   }
                 }
-              ],
+              ]
             }
           ]
         }
@@ -819,18 +817,17 @@ describe('Introspection', () => {
     });
   });
 
-  it('introspects on input object', async () => {
-
+  it("introspects on input object", async () => {
     const TestInputObject = new GraphQLInputObjectType({
-      name: 'TestInputObject',
+      name: "TestInputObject",
       fields: {
-        a: { type: GraphQLString, defaultValue: 'foo' },
+        a: { type: GraphQLString, defaultValue: "foo" },
         b: { type: new GraphQLList(GraphQLString) }
       }
     });
 
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         field: {
           type: GraphQLString,
@@ -874,39 +871,50 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.containSubset({
-      data:
-       { __schema:
-          { types:
-             [ { kind: 'INPUT_OBJECT',
-                 name: 'TestInputObject',
-                 inputFields:
-                  [ { name: 'a',
-                      type:
-                       { kind: 'SCALAR',
-                         name: 'String',
-                         ofType: null },
-                      defaultValue: '"foo"' },
-                    { name: 'b',
-                      type:
-                       { kind: 'LIST',
-                         name: null,
-                         ofType:
-                          { kind: 'SCALAR',
-                            name: 'String',
-                            ofType: null } },
-                      defaultValue: null } ] } ] } }
+    return expect(await graphql(schema, request)).to.containSubset({
+      data: {
+        __schema: {
+          types: [
+            {
+              kind: "INPUT_OBJECT",
+              name: "TestInputObject",
+              inputFields: [
+                {
+                  name: "a",
+                  type: {
+                    kind: "SCALAR",
+                    name: "String",
+                    ofType: null
+                  },
+                  defaultValue: '"foo"'
+                },
+                {
+                  name: "b",
+                  type: {
+                    kind: "LIST",
+                    name: null,
+                    ofType: {
+                      kind: "SCALAR",
+                      name: "String",
+                      ofType: null
+                    }
+                  },
+                  defaultValue: null
+                }
+              ]
+            }
+          ]
+        }
+      }
     });
   });
 
-  it('supports the __type root field', async () => {
+  it("supports the __type root field", async () => {
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         testField: {
-          type: GraphQLString,
+          type: GraphQLString
         }
       }
     });
@@ -920,28 +928,25 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         __type: {
-          name: 'TestType'
+          name: "TestType"
         }
       }
     });
   });
 
-  it('identifies deprecated fields', async () => {
-
+  it("identifies deprecated fields", async () => {
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         nonDeprecated: {
-          type: GraphQLString,
+          type: GraphQLString
         },
         deprecated: {
           type: GraphQLString,
-          deprecationReason: 'Removed in 1.0'
+          deprecationReason: "Removed in 1.0"
         }
       }
     });
@@ -960,22 +965,20 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         __type: {
-          name: 'TestType',
+          name: "TestType",
           fields: [
             {
-              name: 'nonDeprecated',
+              name: "nonDeprecated",
               isDeprecated: false,
               deprecationReason: null
             },
             {
-              name: 'deprecated',
+              name: "deprecated",
               isDeprecated: true,
-              deprecationReason: 'Removed in 1.0'
+              deprecationReason: "Removed in 1.0"
             }
           ]
         }
@@ -983,17 +986,16 @@ describe('Introspection', () => {
     });
   });
 
-  it('respects the includeDeprecated parameter for fields', async () => {
-
+  it("respects the includeDeprecated parameter for fields", async () => {
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         nonDeprecated: {
-          type: GraphQLString,
+          type: GraphQLString
         },
         deprecated: {
           type: GraphQLString,
-          deprecationReason: 'Removed in 1.0'
+          deprecationReason: "Removed in 1.0"
         }
       }
     });
@@ -1016,52 +1018,49 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         __type: {
-          name: 'TestType',
+          name: "TestType",
           trueFields: [
             {
-              name: 'nonDeprecated',
+              name: "nonDeprecated"
             },
             {
-              name: 'deprecated',
+              name: "deprecated"
             }
           ],
           falseFields: [
             {
-              name: 'nonDeprecated',
+              name: "nonDeprecated"
             }
           ],
           omittedFields: [
             {
-              name: 'nonDeprecated',
+              name: "nonDeprecated"
             }
-          ],
+          ]
         }
       }
     });
   });
 
-  it('identifies deprecated enum values', async () => {
-
+  it("identifies deprecated enum values", async () => {
     const TestEnum = new GraphQLEnumType({
-      name: 'TestEnum',
+      name: "TestEnum",
       values: {
         NONDEPRECATED: { value: 0 },
-        DEPRECATED: { value: 1, deprecationReason: 'Removed in 1.0' },
+        DEPRECATED: { value: 1, deprecationReason: "Removed in 1.0" },
         ALSONONDEPRECATED: { value: 2 }
       }
     });
 
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         testEnum: {
-          type: TestEnum,
-        },
+          type: TestEnum
+        }
       }
     });
 
@@ -1079,25 +1078,23 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         __type: {
-          name: 'TestEnum',
+          name: "TestEnum",
           enumValues: [
             {
-              name: 'NONDEPRECATED',
+              name: "NONDEPRECATED",
               isDeprecated: false,
               deprecationReason: null
             },
             {
-              name: 'DEPRECATED',
+              name: "DEPRECATED",
               isDeprecated: true,
-              deprecationReason: 'Removed in 1.0'
+              deprecationReason: "Removed in 1.0"
             },
             {
-              name: 'ALSONONDEPRECATED',
+              name: "ALSONONDEPRECATED",
               isDeprecated: false,
               deprecationReason: null
             }
@@ -1107,23 +1104,22 @@ describe('Introspection', () => {
     });
   });
 
-  it('respects the includeDeprecated parameter for enum values', async () => {
-
+  it("respects the includeDeprecated parameter for enum values", async () => {
     const TestEnum = new GraphQLEnumType({
-      name: 'TestEnum',
+      name: "TestEnum",
       values: {
         NONDEPRECATED: { value: 0 },
-        DEPRECATED: { value: 1, deprecationReason: 'Removed in 1.0' },
+        DEPRECATED: { value: 1, deprecationReason: "Removed in 1.0" },
         ALSONONDEPRECATED: { value: 2 }
       }
     });
 
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         testEnum: {
-          type: TestEnum,
-        },
+          type: TestEnum
+        }
       }
     });
 
@@ -1145,50 +1141,48 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         __type: {
-          name: 'TestEnum',
+          name: "TestEnum",
           trueValues: [
             {
-              name: 'NONDEPRECATED',
+              name: "NONDEPRECATED"
             },
             {
-              name: 'DEPRECATED',
+              name: "DEPRECATED"
             },
             {
-              name: 'ALSONONDEPRECATED',
+              name: "ALSONONDEPRECATED"
             }
           ],
           falseValues: [
             {
-              name: 'NONDEPRECATED',
+              name: "NONDEPRECATED"
             },
             {
-              name: 'ALSONONDEPRECATED',
+              name: "ALSONONDEPRECATED"
             }
           ],
           omittedValues: [
             {
-              name: 'NONDEPRECATED',
+              name: "NONDEPRECATED"
             },
             {
-              name: 'ALSONONDEPRECATED',
+              name: "ALSONONDEPRECATED"
             }
-          ],
+          ]
         }
       }
     });
   });
 
-  it('fails as expected on the __type root field without an arg', async () => {
+  it("fails as expected on the __type root field without an arg", async () => {
     const TestType = new GraphQLObjectType({
-      name: 'TestType',
+      name: "TestType",
       fields: {
         testField: {
-          type: GraphQLString,
+          type: GraphQLString
         }
       }
     });
@@ -1202,19 +1196,19 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.containSubset({
+    return expect(await graphql(schema, request)).to.containSubset({
       errors: [
-        { message: missingFieldArgMessage('__type', 'name', 'String!'),
-          locations: [ { line: 3, column: 9 } ] }
+        {
+          message: missingFieldArgMessage("__type", "name", "String!"),
+          locations: [{ line: 3, column: 9 }]
+        }
       ]
     });
   });
 
-  it('exposes descriptions on types and fields', async () => {
+  it("exposes descriptions on types and fields", async () => {
     const QueryRoot = new GraphQLObjectType({
-      name: 'QueryRoot',
+      name: "QueryRoot",
       fields: {
         onlyField: { type: GraphQLString }
       }
@@ -1234,39 +1228,40 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         schemaType: {
-          name: '__Schema',
-          description: 'A GraphQL Schema defines the capabilities of a ' +
-                       'GraphQL server. It exposes all available types and ' +
-                       'directives on the server, as well as the entry ' +
-                       'points for query, mutation, ' +
-                       'and subscription operations.',
+          name: "__Schema",
+          description:
+            "A GraphQL Schema defines the capabilities of a " +
+            "GraphQL server. It exposes all available types and " +
+            "directives on the server, as well as the entry " +
+            "points for query, mutation, " +
+            "and subscription operations.",
           fields: [
             {
-              name: 'types',
-              description: 'A list of all types supported by this server.'
+              name: "types",
+              description: "A list of all types supported by this server."
             },
             {
-              name: 'queryType',
-              description: 'The type that query operations will be rooted at.'
+              name: "queryType",
+              description: "The type that query operations will be rooted at."
             },
             {
-              name: 'mutationType',
-              description: 'If this server supports mutation, the type that ' +
-                           'mutation operations will be rooted at.'
+              name: "mutationType",
+              description:
+                "If this server supports mutation, the type that " +
+                "mutation operations will be rooted at."
             },
             {
-              name: 'subscriptionType',
-              description: 'If this server support subscription, the type ' +
-                           'that subscription operations will be rooted at.',
+              name: "subscriptionType",
+              description:
+                "If this server support subscription, the type " +
+                "that subscription operations will be rooted at."
             },
             {
-              name: 'directives',
-              description: 'A list of all directives supported by this server.'
+              name: "directives",
+              description: "A list of all directives supported by this server."
             }
           ]
         }
@@ -1274,9 +1269,9 @@ describe('Introspection', () => {
     });
   });
 
-  it('exposes descriptions on enums', async () => {
+  it("exposes descriptions on enums", async () => {
     const QueryRoot = new GraphQLObjectType({
-      name: 'QueryRoot',
+      name: "QueryRoot",
       fields: {
         onlyField: { type: GraphQLString }
       }
@@ -1296,58 +1291,62 @@ describe('Introspection', () => {
       }
     `;
 
-    return expect(
-      await graphql(schema, request)
-    ).to.deep.equal({
+    return expect(await graphql(schema, request)).to.deep.equal({
       data: {
         typeKindType: {
-          name: '__TypeKind',
+          name: "__TypeKind",
           description:
-            'An enum describing what kind of type a given `__Type` is.',
+            "An enum describing what kind of type a given `__Type` is.",
           enumValues: [
             {
-              description: 'Indicates this type is a scalar.',
-              name: 'SCALAR'
+              description: "Indicates this type is a scalar.",
+              name: "SCALAR"
             },
             {
-              description: 'Indicates this type is an object. ' +
-                           '`fields` and `interfaces` are valid fields.',
-              name: 'OBJECT'
+              description:
+                "Indicates this type is an object. " +
+                "`fields` and `interfaces` are valid fields.",
+              name: "OBJECT"
             },
             {
-              description: 'Indicates this type is an interface. ' +
-                           '`fields` and `possibleTypes` are valid fields.',
-              name: 'INTERFACE'
+              description:
+                "Indicates this type is an interface. " +
+                "`fields` and `possibleTypes` are valid fields.",
+              name: "INTERFACE"
             },
             {
-              description: 'Indicates this type is a union. ' +
-                           '`possibleTypes` is a valid field.',
-              name: 'UNION'
+              description:
+                "Indicates this type is a union. " +
+                "`possibleTypes` is a valid field.",
+              name: "UNION"
             },
             {
-              description: 'Indicates this type is an enum. ' +
-                           '`enumValues` is a valid field.',
-              name: 'ENUM'
+              description:
+                "Indicates this type is an enum. " +
+                "`enumValues` is a valid field.",
+              name: "ENUM"
             },
             {
-              description: 'Indicates this type is an input object. ' +
-                           '`inputFields` is a valid field.',
-              name: 'INPUT_OBJECT'
+              description:
+                "Indicates this type is an input object. " +
+                "`inputFields` is a valid field.",
+              name: "INPUT_OBJECT"
             },
             {
-              description: 'Indicates this type is a list. ' +
-                           '`ofType` is a valid field.',
-              name: 'LIST'
+              description:
+                "Indicates this type is a list. " +
+                "`ofType` is a valid field.",
+              name: "LIST"
             },
             {
-              description: 'Indicates this type is a non-null. ' +
-                           '`ofType` is a valid field.',
-              name: 'NON_NULL'
+              description:
+                "Indicates this type is a non-null. " +
+                "`ofType` is a valid field.",
+              name: "NON_NULL"
             }
           ]
         }
       }
     });
   });
-
 });

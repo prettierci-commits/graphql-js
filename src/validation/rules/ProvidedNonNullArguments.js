@@ -8,20 +8,21 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import keyMap from '../../jsutils/keyMap';
-import { GraphQLNonNull } from '../../type/definition';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import keyMap from "../../jsutils/keyMap";
+import { GraphQLNonNull } from "../../type/definition";
+import type { GraphQLType } from "../../type/definition";
 
 export function missingFieldArgMessage(
   fieldName: string,
   argName: string,
   type: GraphQLType
 ): string {
-  return `Field "${fieldName}" argument "${argName}" of type "${type}" ` +
-    'is required but not provided.';
+  return (
+    `Field "${fieldName}" argument "${argName}" of type "${type}" ` +
+    "is required but not provided."
+  );
 }
 
 export function missingDirectiveArgMessage(
@@ -29,8 +30,10 @@ export function missingDirectiveArgMessage(
   argName: string,
   type: GraphQLType
 ): string {
-  return `Directive "@${directiveName}" argument "${argName}" of type ` +
-    `"${type}" is required but not provided.`;
+  return (
+    `Directive "@${directiveName}" argument "${argName}" of type ` +
+    `"${type}" is required but not provided.`
+  );
 }
 
 /**
@@ -54,14 +57,16 @@ export function ProvidedNonNullArguments(context: ValidationContext): any {
         fieldDef.args.forEach(argDef => {
           const argAST = argASTMap[argDef.name];
           if (!argAST && argDef.type instanceof GraphQLNonNull) {
-            context.reportError(new GraphQLError(
-              missingFieldArgMessage(
-                fieldAST.name.value,
-                argDef.name,
-                argDef.type
-              ),
-              [ fieldAST ]
-            ));
+            context.reportError(
+              new GraphQLError(
+                missingFieldArgMessage(
+                  fieldAST.name.value,
+                  argDef.name,
+                  argDef.type
+                ),
+                [fieldAST]
+              )
+            );
           }
         });
       }
@@ -80,14 +85,16 @@ export function ProvidedNonNullArguments(context: ValidationContext): any {
         directiveDef.args.forEach(argDef => {
           const argAST = argASTMap[argDef.name];
           if (!argAST && argDef.type instanceof GraphQLNonNull) {
-            context.reportError(new GraphQLError(
-              missingDirectiveArgMessage(
-                directiveAST.name.value,
-                argDef.name,
-                argDef.type
-              ),
-              [ directiveAST ]
-            ));
+            context.reportError(
+              new GraphQLError(
+                missingDirectiveArgMessage(
+                  directiveAST.name.value,
+                  argDef.name,
+                  argDef.type
+                ),
+                [directiveAST]
+              )
+            );
           }
         });
       }

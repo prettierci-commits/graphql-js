@@ -8,26 +8,25 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { GraphQLError } from '../error';
-import invariant from '../jsutils/invariant';
-import isNullish from '../jsutils/isNullish';
-import keyMap from '../jsutils/keyMap';
-import { typeFromAST } from '../utilities/typeFromAST';
-import { valueFromAST } from '../utilities/valueFromAST';
-import { isValidJSValue } from '../utilities/isValidJSValue';
-import { print } from '../language/printer';
+import { GraphQLError } from "../error";
+import invariant from "../jsutils/invariant";
+import isNullish from "../jsutils/isNullish";
+import keyMap from "../jsutils/keyMap";
+import { typeFromAST } from "../utilities/typeFromAST";
+import { valueFromAST } from "../utilities/valueFromAST";
+import { isValidJSValue } from "../utilities/isValidJSValue";
+import { print } from "../language/printer";
 import {
   isInputType,
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLNonNull,
-} from '../type/definition';
-import type { GraphQLInputType, GraphQLArgument } from '../type/definition';
-import type { GraphQLSchema } from '../type/schema';
-import type { Argument, VariableDefinition } from '../language/ast';
-
+  GraphQLNonNull
+} from "../type/definition";
+import type { GraphQLInputType, GraphQLArgument } from "../type/definition";
+import type { GraphQLSchema } from "../type/schema";
+import type { Argument, VariableDefinition } from "../language/ast";
 
 /**
  * Prepares an object map of variableValues of the correct type based on the
@@ -45,7 +44,6 @@ export function getVariableValues(
     return values;
   }, {});
 }
-
 
 /**
  * Prepares an object map of argument values given a list of argument
@@ -74,7 +72,6 @@ export function getArgumentValues(
   }, {});
 }
 
-
 /**
  * Given a variable definition, and any value of input, return a value which
  * adheres to the variable definition, or throw an error.
@@ -89,8 +86,8 @@ function getVariableValue(
   if (!type || !isInputType(type)) {
     throw new GraphQLError(
       `Variable "$${variable.name.value}" expected value of type ` +
-      `"${print(definitionAST.type)}" which cannot be used as an input type.`,
-      [ definitionAST ]
+        `"${print(definitionAST.type)}" which cannot be used as an input type.`,
+      [definitionAST]
     );
   }
   const inputType = ((type: any): GraphQLInputType);
@@ -107,15 +104,15 @@ function getVariableValue(
   if (isNullish(input)) {
     throw new GraphQLError(
       `Variable "$${variable.name.value}" of required type ` +
-      `"${print(definitionAST.type)}" was not provided.`,
-      [ definitionAST ]
+        `"${print(definitionAST.type)}" was not provided.`,
+      [definitionAST]
     );
   }
-  const message = errors ? '\n' + errors.join('\n') : '';
+  const message = errors ? "\n" + errors.join("\n") : "";
   throw new GraphQLError(
     `Variable "$${variable.name.value}" got invalid value ` +
-    `${JSON.stringify(input)}.${message}`,
-    [ definitionAST ]
+      `${JSON.stringify(input)}.${message}`,
+    [definitionAST]
   );
 }
 
@@ -142,11 +139,11 @@ function coerceValue(type: GraphQLInputType, value: mixed): mixed {
     if (Array.isArray(_value)) {
       return _value.map(item => coerceValue(itemType, item));
     }
-    return [ coerceValue(itemType, _value) ];
+    return [coerceValue(itemType, _value)];
   }
 
   if (type instanceof GraphQLInputObjectType) {
-    if (typeof _value !== 'object' || _value === null) {
+    if (typeof _value !== "object" || _value === null) {
       return null;
     }
     const fields = type.getFields();
@@ -165,7 +162,7 @@ function coerceValue(type: GraphQLInputType, value: mixed): mixed {
 
   invariant(
     type instanceof GraphQLScalarType || type instanceof GraphQLEnumType,
-    'Must be input type'
+    "Must be input type"
   );
 
   const parsed = type.parseValue(_value);

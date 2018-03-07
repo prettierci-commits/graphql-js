@@ -15,18 +15,17 @@ import {
   GraphQLUnionType,
   GraphQLList,
   GraphQLNonNull
-} from './definition';
-import type { GraphQLType, GraphQLAbstractType } from './definition';
+} from "./definition";
+import type { GraphQLType, GraphQLAbstractType } from "./definition";
 import {
   GraphQLDirective,
   GraphQLIncludeDirective,
   GraphQLSkipDirective
-} from './directives';
-import { __Schema } from './introspection';
-import find from '../jsutils/find';
-import invariant from '../jsutils/invariant';
-import { isEqualType, isTypeSubTypeOf } from '../utilities/typeComparators';
-
+} from "./directives";
+import { __Schema } from "./introspection";
+import find from "../jsutils/find";
+import invariant from "../jsutils/invariant";
+import { isEqualType, isTypeSubTypeOf } from "../utilities/typeComparators";
 
 /**
  * Schema Definition
@@ -50,14 +49,12 @@ export class GraphQLSchema {
   _directives: Array<GraphQLDirective>;
   _typeMap: TypeMap;
   _implementations: { [interfaceName: string]: Array<GraphQLObjectType> };
-  _possibleTypeMap:
-    ?{ [abstractName: string]: { [possibleName: string]: boolean } };
+  _possibleTypeMap: ?{
+    [abstractName: string]: { [possibleName: string]: boolean }
+  };
 
   constructor(config: GraphQLSchemaConfig) {
-    invariant(
-      typeof config === 'object',
-      'Must provide configuration object.'
-    );
+    invariant(typeof config === "object", "Must provide configuration object.");
 
     invariant(
       config.query instanceof GraphQLObjectType,
@@ -68,14 +65,16 @@ export class GraphQLSchema {
     invariant(
       !config.mutation || config.mutation instanceof GraphQLObjectType,
       `Schema mutation must be Object Type if provided but got: ${
-        config.mutation}.`
+        config.mutation
+      }.`
     );
     this._mutationType = config.mutation;
 
     invariant(
       !config.subscription || config.subscription instanceof GraphQLObjectType,
       `Schema subscription must be Object Type if provided but got: ${
-        config.subscription}.`
+        config.subscription
+      }.`
     );
     this._subscriptionType = config.subscription;
 
@@ -86,11 +85,13 @@ export class GraphQLSchema {
 
     invariant(
       !config.directives ||
-      Array.isArray(config.directives) && config.directives.every(
-        directive => directive instanceof GraphQLDirective
-      ),
+        (Array.isArray(config.directives) &&
+          config.directives.every(
+            directive => directive instanceof GraphQLDirective
+          )),
       `Schema directives must be Array<GraphQLDirective> if provided but got: ${
-        config.directives}.`
+        config.directives
+      }.`
     );
     // Provide `@include() and `@skip()` directives by default.
     this._directives = config.directives || [
@@ -126,7 +127,7 @@ export class GraphQLSchema {
           if (impls) {
             impls.push(type);
           } else {
-            this._implementations[iface.name] = [ type ];
+            this._implementations[iface.name] = [type];
           }
         });
       }
@@ -136,9 +137,9 @@ export class GraphQLSchema {
     Object.keys(this._typeMap).forEach(typeName => {
       const type = this._typeMap[typeName];
       if (type instanceof GraphQLObjectType) {
-        type.getInterfaces().forEach(
-          iface => assertObjectImplementsInterface(this, type, iface)
-        );
+        type
+          .getInterfaces()
+          .forEach(iface => assertObjectImplementsInterface(this, type, iface));
       }
     });
   }
@@ -183,11 +184,12 @@ export class GraphQLSchema {
     }
 
     if (!possibleTypeMap[abstractType.name]) {
-      possibleTypeMap[abstractType.name] =
-        this.getPossibleTypes(abstractType).reduce(
-          (map, type) => ((map[type.name] = true), map),
-          Object.create(null)
-        );
+      possibleTypeMap[abstractType.name] = this.getPossibleTypes(
+        abstractType
+      ).reduce(
+        (map, type) => ((map[type.name] = true), map),
+        Object.create(null)
+      );
     }
 
     return Boolean(possibleTypeMap[abstractType.name][possibleType.name]);
@@ -202,15 +204,15 @@ export class GraphQLSchema {
   }
 }
 
-type TypeMap = { [typeName: string]: GraphQLType }
+type TypeMap = { [typeName: string]: GraphQLType };
 
 type GraphQLSchemaConfig = {
-  query: GraphQLObjectType;
-  mutation?: ?GraphQLObjectType;
-  subscription?: ?GraphQLObjectType;
-  types?: ?Array<GraphQLType>;
-  directives?: ?Array<GraphQLDirective>;
-}
+  query: GraphQLObjectType,
+  mutation?: ?GraphQLObjectType,
+  subscription?: ?GraphQLObjectType,
+  types?: ?Array<GraphQLType>,
+  directives?: ?Array<GraphQLDirective>
+};
 
 function typeMapReducer(map: TypeMap, type: ?GraphQLType): TypeMap {
   if (!type) {
@@ -222,8 +224,8 @@ function typeMapReducer(map: TypeMap, type: ?GraphQLType): TypeMap {
   if (map[type.name]) {
     invariant(
       map[type.name] === type,
-      'Schema must contain unique named types but contains multiple ' +
-      `types named "${type}".`
+      "Schema must contain unique named types but contains multiple " +
+        `types named "${type}".`
     );
     return map;
   }
@@ -239,9 +241,11 @@ function typeMapReducer(map: TypeMap, type: ?GraphQLType): TypeMap {
     reducedMap = type.getInterfaces().reduce(typeMapReducer, reducedMap);
   }
 
-  if (type instanceof GraphQLObjectType ||
-      type instanceof GraphQLInterfaceType ||
-      type instanceof GraphQLInputObjectType) {
+  if (
+    type instanceof GraphQLObjectType ||
+    type instanceof GraphQLInterfaceType ||
+    type instanceof GraphQLInputObjectType
+  ) {
     const fieldMap = type.getFields();
     Object.keys(fieldMap).forEach(fieldName => {
       const field = fieldMap[fieldName];
@@ -274,7 +278,7 @@ function assertObjectImplementsInterface(
     invariant(
       objectField,
       `"${iface}" expects field "${fieldName}" but "${object}" does not ` +
-      'provide it.'
+        "provide it."
     );
 
     // Assert interface field type is satisfied by object field type, by being
@@ -282,7 +286,7 @@ function assertObjectImplementsInterface(
     invariant(
       isTypeSubTypeOf(schema, objectField.type, ifaceField.type),
       `${iface}.${fieldName} expects type "${ifaceField.type}" but ` +
-      `${object}.${fieldName} provides type "${objectField.type}".`
+        `${object}.${fieldName} provides type "${objectField.type}".`
     );
 
     // Assert each interface field arg is implemented.
@@ -294,7 +298,7 @@ function assertObjectImplementsInterface(
       invariant(
         objectArg,
         `${iface}.${fieldName} expects argument "${argName}" but ` +
-        `${object}.${fieldName} does not provide it.`
+          `${object}.${fieldName} does not provide it.`
       );
 
       // Assert interface field arg type matches object field arg type.
@@ -302,8 +306,8 @@ function assertObjectImplementsInterface(
       invariant(
         isEqualType(ifaceArg.type, objectArg.type),
         `${iface}.${fieldName}(${argName}:) expects type "${ifaceArg.type}" ` +
-        `but ${object}.${fieldName}(${argName}:) provides ` +
-        `type "${objectArg.type}".`
+          `but ${object}.${fieldName}(${argName}:) provides ` +
+          `type "${objectArg.type}".`
       );
     });
 
@@ -315,8 +319,8 @@ function assertObjectImplementsInterface(
         invariant(
           !(objectArg.type instanceof GraphQLNonNull),
           `${object}.${fieldName}(${argName}:) is of required type ` +
-          `"${objectArg.type}" but is not also provided by the ` +
-          `interface ${iface}.${fieldName}.`
+            `"${objectArg.type}" but is not also provided by the ` +
+            `interface ${iface}.${fieldName}.`
         );
       }
     });

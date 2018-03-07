@@ -8,9 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
 
 export function unknownFragmentMessage(fragName: string): string {
   return `Unknown fragment "${fragName}".`;
@@ -28,10 +27,9 @@ export function KnownFragmentNames(context: ValidationContext): any {
       const fragmentName = node.name.value;
       const fragment = context.getFragment(fragmentName);
       if (!fragment) {
-        context.reportError(new GraphQLError(
-          unknownFragmentMessage(fragmentName),
-          [ node.name ]
-        ));
+        context.reportError(
+          new GraphQLError(unknownFragmentMessage(fragmentName), [node.name])
+        );
       }
     }
   };

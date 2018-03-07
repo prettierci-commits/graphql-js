@@ -7,50 +7,48 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import { describe, it } from "mocha";
+import { expect } from "chai";
 import {
   graphql,
   GraphQLSchema,
   GraphQLEnumType,
   GraphQLObjectType,
   GraphQLInt,
-  GraphQLString,
-} from '../../';
+  GraphQLString
+} from "../../";
 
-
-describe('Type System: Enum Values', () => {
-
+describe("Type System: Enum Values", () => {
   const ColorType = new GraphQLEnumType({
-    name: 'Color',
+    name: "Color",
     values: {
       RED: { value: 0 },
       GREEN: { value: 1 },
-      BLUE: { value: 2 },
+      BLUE: { value: 2 }
     }
   });
 
   const QueryType = new GraphQLObjectType({
-    name: 'Query',
+    name: "Query",
     fields: {
       colorEnum: {
         type: ColorType,
         args: {
           fromEnum: { type: ColorType },
           fromInt: { type: GraphQLInt },
-          fromString: { type: GraphQLString },
+          fromString: { type: GraphQLString }
         },
         resolve(value, { fromEnum, fromInt, fromString }) {
-          return fromInt !== undefined ? fromInt :
-            fromString !== undefined ? fromString :
-            fromEnum;
+          return fromInt !== undefined
+            ? fromInt
+            : fromString !== undefined ? fromString : fromEnum;
         }
       },
       colorInt: {
         type: GraphQLInt,
         args: {
           fromEnum: { type: ColorType },
-          fromInt: { type: GraphQLInt },
+          fromInt: { type: GraphQLInt }
         },
         resolve(value, { fromEnum, fromInt }) {
           return fromInt !== undefined ? fromInt : fromEnum;
@@ -60,23 +58,27 @@ describe('Type System: Enum Values', () => {
   });
 
   const MutationType = new GraphQLObjectType({
-    name: 'Mutation',
+    name: "Mutation",
     fields: {
       favoriteEnum: {
         type: ColorType,
         args: { color: { type: ColorType } },
-        resolve(value, { color }) { return color; }
+        resolve(value, { color }) {
+          return color;
+        }
       }
     }
   });
 
   const SubscriptionType = new GraphQLObjectType({
-    name: 'Subscription',
+    name: "Subscription",
     fields: {
       subscribeToEnum: {
         type: ColorType,
         args: { color: { type: ColorType } },
-        resolve(value, { color }) { return color; }
+        resolve(value, { color }) {
+          return color;
+        }
       }
     }
   });
@@ -87,9 +89,9 @@ describe('Type System: Enum Values', () => {
     subscription: SubscriptionType
   });
 
-  it('accepts enum literals as input', async () => {
+  it("accepts enum literals as input", async () => {
     expect(
-      await graphql(schema, '{ colorInt(fromEnum: GREEN) }')
+      await graphql(schema, "{ colorInt(fromEnum: GREEN) }")
     ).to.deep.equal({
       data: {
         colorInt: 1
@@ -97,40 +99,38 @@ describe('Type System: Enum Values', () => {
     });
   });
 
-  it('enum may be output type', async () => {
-    expect(
-      await graphql(schema, '{ colorEnum(fromInt: 1) }')
-    ).to.deep.equal({
+  it("enum may be output type", async () => {
+    expect(await graphql(schema, "{ colorEnum(fromInt: 1) }")).to.deep.equal({
       data: {
-        colorEnum: 'GREEN'
+        colorEnum: "GREEN"
       }
     });
   });
 
-  it('enum may be both input and output type', async () => {
+  it("enum may be both input and output type", async () => {
     expect(
-      await graphql(schema, '{ colorEnum(fromEnum: GREEN) }')
+      await graphql(schema, "{ colorEnum(fromEnum: GREEN) }")
     ).to.deep.equal({
       data: {
-        colorEnum: 'GREEN'
+        colorEnum: "GREEN"
       }
     });
   });
 
-  it('does not accept string literals', async () => {
+  it("does not accept string literals", async () => {
     expect(
       await graphql(schema, '{ colorEnum(fromEnum: "GREEN") }')
     ).to.deep.equal({
       errors: [
         new Error(
           'Argument "fromEnum" has invalid value "GREEN".' +
-          '\nExpected type \"Color\", found "GREEN".'
+            '\nExpected type "Color", found "GREEN".'
         )
       ]
     });
   });
 
-  it('does not accept incorrect internal value', async () => {
+  it("does not accept incorrect internal value", async () => {
     expect(
       await graphql(schema, '{ colorEnum(fromString: "GREEN") }')
     ).to.deep.equal({
@@ -140,85 +140,83 @@ describe('Type System: Enum Values', () => {
     });
   });
 
-  it('does not accept internal value in place of enum literal', async () => {
-    expect(
-      await graphql(schema, '{ colorEnum(fromEnum: 1) }')
-    ).to.deep.equal({
+  it("does not accept internal value in place of enum literal", async () => {
+    expect(await graphql(schema, "{ colorEnum(fromEnum: 1) }")).to.deep.equal({
       errors: [
         new Error(
           'Argument "fromEnum" has invalid value 1.' +
-          '\nExpected type "Color", found 1.'
+            '\nExpected type "Color", found 1.'
         )
       ]
     });
   });
 
-  it('does not accept enum literal in place of int', async () => {
+  it("does not accept enum literal in place of int", async () => {
     expect(
-      await graphql(schema, '{ colorEnum(fromInt: GREEN) }')
+      await graphql(schema, "{ colorEnum(fromInt: GREEN) }")
     ).to.deep.equal({
       errors: [
         new Error(
           'Argument "fromInt" has invalid value GREEN.' +
-          '\nExpected type "Int", found GREEN.'
+            '\nExpected type "Int", found GREEN.'
         )
       ]
     });
   });
 
-  it('accepts JSON string as enum variable', async () => {
+  it("accepts JSON string as enum variable", async () => {
     expect(
       await graphql(
         schema,
-        'query test($color: Color!) { colorEnum(fromEnum: $color) }',
+        "query test($color: Color!) { colorEnum(fromEnum: $color) }",
         null,
         null,
-        { color: 'BLUE' }
+        { color: "BLUE" }
       )
     ).to.deep.equal({
       data: {
-        colorEnum: 'BLUE'
+        colorEnum: "BLUE"
       }
     });
   });
 
-  it('accepts enum literals as input arguments to mutations', async () => {
+  it("accepts enum literals as input arguments to mutations", async () => {
     expect(
       await graphql(
         schema,
-        'mutation x($color: Color!) { favoriteEnum(color: $color) }',
+        "mutation x($color: Color!) { favoriteEnum(color: $color) }",
         null,
         null,
-        { color: 'GREEN' }
+        { color: "GREEN" }
       )
     ).to.deep.equal({
       data: {
-        favoriteEnum: 'GREEN'
+        favoriteEnum: "GREEN"
       }
     });
   });
 
-  it('accepts enum literals as input arguments to subscriptions', async () => {
+  it("accepts enum literals as input arguments to subscriptions", async () => {
     expect(
       await graphql(
         schema,
-        'subscription x($color: Color!) { subscribeToEnum(color: $color) }',
+        "subscription x($color: Color!) { subscribeToEnum(color: $color) }",
         null,
         null,
-        { color: 'GREEN' }
+        { color: "GREEN" }
       )
     ).to.deep.equal({
       data: {
-        subscribeToEnum: 'GREEN'
+        subscribeToEnum: "GREEN"
       }
     });
   });
 
-  it('does not accept internal value as enum variable', async () => {
+  it("does not accept internal value as enum variable", async () => {
     expect(
       await graphql(
         schema,
-        'query test($color: Color!) { colorEnum(fromEnum: $color) }',
+        "query test($color: Color!) { colorEnum(fromEnum: $color) }",
         null,
         null,
         { color: 2 }
@@ -226,37 +224,37 @@ describe('Type System: Enum Values', () => {
     ).to.deep.equal({
       errors: [
         new Error(
-          'Variable "\$color" got invalid value 2.' +
-          '\nExpected type "Color", found 2.'
+          'Variable "$color" got invalid value 2.' +
+            '\nExpected type "Color", found 2.'
         )
       ]
     });
   });
 
-  it('does not accept string variables as enum input', async () => {
+  it("does not accept string variables as enum input", async () => {
     expect(
       await graphql(
         schema,
-        'query test($color: String!) { colorEnum(fromEnum: $color) }',
+        "query test($color: String!) { colorEnum(fromEnum: $color) }",
         null,
         null,
-        { color: 'BLUE' }
+        { color: "BLUE" }
       )
     ).to.deep.equal({
       errors: [
         new Error(
           'Variable "$color" of type "String!" used in position ' +
-          'expecting type "Color".'
+            'expecting type "Color".'
         )
       ]
     });
   });
 
-  it('does not accept internal value variable as enum input', async () => {
+  it("does not accept internal value variable as enum input", async () => {
     expect(
       await graphql(
         schema,
-        'query test($color: Int!) { colorEnum(fromEnum: $color) }',
+        "query test($color: Int!) { colorEnum(fromEnum: $color) }",
         null,
         null,
         { color: 2 }
@@ -265,32 +263,42 @@ describe('Type System: Enum Values', () => {
       errors: [
         new Error(
           'Variable "$color" of type "Int!" used in position ' +
-          'expecting type "Color".'
+            'expecting type "Color".'
         )
       ]
     });
   });
 
-  it('enum value may have an internal value of 0', async () => {
+  it("enum value may have an internal value of 0", async () => {
     expect(
-      await graphql(schema, `{
-        colorEnum(fromEnum: RED)
-        colorInt(fromEnum: RED)
-      }`)
+      await graphql(
+        schema,
+        `
+          {
+            colorEnum(fromEnum: RED)
+            colorInt(fromEnum: RED)
+          }
+        `
+      )
     ).to.deep.equal({
       data: {
-        colorEnum: 'RED',
+        colorEnum: "RED",
         colorInt: 0
       }
     });
   });
 
-  it('enum inputs may be nullable', async () => {
+  it("enum inputs may be nullable", async () => {
     expect(
-      await graphql(schema, `{
-        colorEnum
-        colorInt
-      }`)
+      await graphql(
+        schema,
+        `
+          {
+            colorEnum
+            colorInt
+          }
+        `
+      )
     ).to.deep.equal({
       data: {
         colorEnum: null,
@@ -298,5 +306,4 @@ describe('Type System: Enum Values', () => {
       }
     });
   });
-
 });

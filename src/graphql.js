@@ -8,13 +8,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { Source } from './language/source';
-import { parse } from './language/parser';
-import { validate } from './validation/validate';
-import { execute } from './execution/execute';
-import type { GraphQLError } from './error/GraphQLError';
-import type { GraphQLSchema } from './type/schema';
-
+import { Source } from "./language/source";
+import { parse } from "./language/parser";
+import { validate } from "./validation/validate";
+import { execute } from "./execution/execute";
+import type { GraphQLError } from "./error/GraphQLError";
+import type { GraphQLSchema } from "./type/schema";
 
 /**
  * This is the primary entry point function for fulfilling GraphQL operations
@@ -45,11 +44,11 @@ export function graphql(
   requestString: string,
   rootValue?: mixed,
   contextValue?: mixed,
-  variableValues?: ?{[key: string]: mixed},
+  variableValues?: ?{ [key: string]: mixed },
   operationName?: ?string
 ): Promise<GraphQLResult> {
   return new Promise(resolve => {
-    const source = new Source(requestString || '', 'GraphQL request');
+    const source = new Source(requestString || "", "GraphQL request");
     const documentAST = parse(source);
     const validationErrors = validate(schema, documentAST);
     if (validationErrors.length > 0) {
@@ -67,7 +66,7 @@ export function graphql(
       );
     }
   }).catch(error => {
-    return { errors: [ error ] };
+    return { errors: [error] };
   });
 }
 
@@ -78,6 +77,6 @@ export function graphql(
  * `errors` is included when any errors occurred as a non-empty array.
  */
 type GraphQLResult = {
-  data?: ?Object;
-  errors?: Array<GraphQLError>;
-}
+  data?: ?Object,
+  errors?: Array<GraphQLError>
+};

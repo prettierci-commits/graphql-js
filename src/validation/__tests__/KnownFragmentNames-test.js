@@ -7,25 +7,25 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { describe, it } from 'mocha';
-import { expectPassesRule, expectFailsRule } from './harness';
+import { describe, it } from "mocha";
+import { expectPassesRule, expectFailsRule } from "./harness";
 import {
   KnownFragmentNames,
-  unknownFragmentMessage,
-} from '../rules/KnownFragmentNames';
-
+  unknownFragmentMessage
+} from "../rules/KnownFragmentNames";
 
 function undefFrag(fragName, line, column) {
   return {
     message: unknownFragmentMessage(fragName),
-    locations: [ { line, column } ]
+    locations: [{ line, column }]
   };
 }
 
-describe('Validate: Known fragment names', () => {
-
-  it('known fragment names are valid', () => {
-    expectPassesRule(KnownFragmentNames, `
+describe("Validate: Known fragment names", () => {
+  it("known fragment names are valid", () => {
+    expectPassesRule(
+      KnownFragmentNames,
+      `
       {
         human(id: 4) {
           ...HumanFields1
@@ -47,11 +47,14 @@ describe('Validate: Known fragment names', () => {
       fragment HumanFields3 on Human {
         name
       }
-    `);
+    `
+    );
   });
 
-  it('unknown fragment names are invalid', () => {
-    expectFailsRule(KnownFragmentNames, `
+  it("unknown fragment names are invalid", () => {
+    expectFailsRule(
+      KnownFragmentNames,
+      `
       {
         human(id: 4) {
           ...UnknownFragment1
@@ -64,11 +67,12 @@ describe('Validate: Known fragment names', () => {
         name
         ...UnknownFragment3
       }
-    `, [
-      undefFrag('UnknownFragment1', 4, 14),
-      undefFrag('UnknownFragment2', 6, 16),
-      undefFrag('UnknownFragment3', 12, 12)
-    ]);
+    `,
+      [
+        undefFrag("UnknownFragment1", 4, 14),
+        undefFrag("UnknownFragment2", 6, 16),
+        undefFrag("UnknownFragment3", 12, 12)
+      ]
+    );
   });
-
 });

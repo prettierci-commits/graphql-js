@@ -8,10 +8,9 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import type { VariableDefinition } from '../../language/ast';
-import { GraphQLError } from '../../error';
-
+import type { ValidationContext } from "../index";
+import type { VariableDefinition } from "../../language/ast";
+import { GraphQLError } from "../../error";
 
 export function duplicateVariableMessage(variableName: string): string {
   return `There can be only one variable named "${variableName}".`;
@@ -31,10 +30,12 @@ export function UniqueVariableNames(context: ValidationContext): any {
     VariableDefinition(node: VariableDefinition) {
       const variableName = node.variable.name.value;
       if (knownVariableNames[variableName]) {
-        context.reportError(new GraphQLError(
-          duplicateVariableMessage(variableName),
-          [ knownVariableNames[variableName], node.variable.name ]
-        ));
+        context.reportError(
+          new GraphQLError(duplicateVariableMessage(variableName), [
+            knownVariableNames[variableName],
+            node.variable.name
+          ])
+        );
       } else {
         knownVariableNames[variableName] = node.variable.name;
       }

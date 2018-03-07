@@ -1,5 +1,4 @@
-Contributing to graphql-js
-==========================
+# Contributing to graphql-js
 
 We want to make contributing to this project as easy and transparent as
 possible. Hopefully this document makes the process for contributing clear and
@@ -80,12 +79,12 @@ This will watch the file system run any relevant lint, tests, and type checks au
 
 ## Release on NPM
 
-*Only core contributors may release to NPM.*
+_Only core contributors may release to NPM._
 
 To release a new version on NPM, first ensure all tests pass with `npm test`,
 then use `npm version patch|minor|major` in order to increment the version in
 package.json and tag and commit a release. Then `git push && git push --tags`
-this change so Travis CI can deploy to NPM. *Do not run `npm publish` directly.*
+this change so Travis CI can deploy to NPM. _Do not run `npm publish` directly._
 Once published, add [release notes](https://github.com/graphql/graphql-js/tags).
 Use [semver](http://semver.org/) to determine which version part to increment.
 

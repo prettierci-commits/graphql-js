@@ -9,7 +9,7 @@
  */
 
 // GraphQL Schema definition
-export { GraphQLSchema } from './schema';
+export { GraphQLSchema } from "./schema";
 
 export {
   // Predicates
@@ -19,11 +19,9 @@ export {
   isLeafType,
   isCompositeType,
   isAbstractType,
-
   // Un-modifiers
   getNullableType,
   getNamedType,
-
   // Definitions
   GraphQLScalarType,
   GraphQLObjectType,
@@ -32,8 +30,8 @@ export {
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLNonNull,
-} from './definition';
+  GraphQLNonNull
+} from "./definition";
 
 // Common built-in scalar instances.
 export {
@@ -41,5 +39,5 @@ export {
   GraphQLFloat,
   GraphQLString,
   GraphQLBoolean,
-  GraphQLID,
-} from './scalars';
+  GraphQLID
+} from "./scalars";

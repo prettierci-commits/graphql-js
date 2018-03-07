@@ -8,8 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { GraphQLScalarType } from './definition';
-import { Kind } from '../language';
+import { GraphQLScalarType } from "./definition";
+import { Kind } from "../language";
 
 // As per the GraphQL Spec, Integers are only treated as valid when a valid
 // 32-bit signed integer, providing the broadest support across platforms.
@@ -25,14 +25,13 @@ function coerceInt(value) {
     return (num < 0 ? Math.ceil : Math.floor)(num);
   }
   return null;
-
 }
 
 export const GraphQLInt = new GraphQLScalarType({
-  name: 'Int',
+  name: "Int",
   description:
-    'The `Int` scalar type represents non-fractional signed whole numeric ' +
-    'values. Int can represent values between -(2^31) and 2^31 - 1. ',
+    "The `Int` scalar type represents non-fractional signed whole numeric " +
+    "values. Int can represent values between -(2^31) and 2^31 - 1. ",
   serialize: coerceInt,
   parseValue: coerceInt,
   parseLiteral(ast) {
@@ -52,26 +51,26 @@ function coerceFloat(value) {
 }
 
 export const GraphQLFloat = new GraphQLScalarType({
-  name: 'Float',
+  name: "Float",
   description:
-    'The `Float` scalar type represents signed double-precision fractional ' +
-    'values as specified by ' +
-    '[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point). ',
+    "The `Float` scalar type represents signed double-precision fractional " +
+    "values as specified by " +
+    "[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point). ",
   serialize: coerceFloat,
   parseValue: coerceFloat,
   parseLiteral(ast) {
-    return ast.kind === Kind.FLOAT || ast.kind === Kind.INT ?
-      parseFloat(ast.value) :
-      null;
+    return ast.kind === Kind.FLOAT || ast.kind === Kind.INT
+      ? parseFloat(ast.value)
+      : null;
   }
 });
 
 export const GraphQLString = new GraphQLScalarType({
-  name: 'String',
+  name: "String",
   description:
-    'The `String` scalar type represents textual data, represented as UTF-8 ' +
-    'character sequences. The String type is most often used by GraphQL to ' +
-    'represent free-form human-readable text.',
+    "The `String` scalar type represents textual data, represented as UTF-8 " +
+    "character sequences. The String type is most often used by GraphQL to " +
+    "represent free-form human-readable text.",
   serialize: String,
   parseValue: String,
   parseLiteral(ast) {
@@ -80,8 +79,8 @@ export const GraphQLString = new GraphQLScalarType({
 });
 
 export const GraphQLBoolean = new GraphQLScalarType({
-  name: 'Boolean',
-  description: 'The `Boolean` scalar type represents `true` or `false`.',
+  name: "Boolean",
+  description: "The `Boolean` scalar type represents `true` or `false`.",
   serialize: Boolean,
   parseValue: Boolean,
   parseLiteral(ast) {
@@ -90,18 +89,16 @@ export const GraphQLBoolean = new GraphQLScalarType({
 });
 
 export const GraphQLID = new GraphQLScalarType({
-  name: 'ID',
+  name: "ID",
   description:
-    'The `ID` scalar type represents a unique identifier, often used to ' +
-    'refetch an object or as key for a cache. The ID type appears in a JSON ' +
-    'response as a String; however, it is not intended to be human-readable. ' +
+    "The `ID` scalar type represents a unique identifier, often used to " +
+    "refetch an object or as key for a cache. The ID type appears in a JSON " +
+    "response as a String; however, it is not intended to be human-readable. " +
     'When expected as an input type, any string (such as `"4"`) or integer ' +
-    '(such as `4`) input value will be accepted as an ID.',
+    "(such as `4`) input value will be accepted as an ID.",
   serialize: String,
   parseValue: String,
   parseLiteral(ast) {
-    return ast.kind === Kind.STRING || ast.kind === Kind.INT ?
-      ast.value :
-      null;
+    return ast.kind === Kind.STRING || ast.kind === Kind.INT ? ast.value : null;
   }
 });

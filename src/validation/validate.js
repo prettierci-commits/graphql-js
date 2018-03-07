@@ -8,30 +8,29 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import { GraphQLError } from '../error';
-import { visit, visitInParallel, visitWithTypeInfo } from '../language/visitor';
-import * as Kind from '../language/kinds';
+import invariant from "../jsutils/invariant";
+import { GraphQLError } from "../error";
+import { visit, visitInParallel, visitWithTypeInfo } from "../language/visitor";
+import * as Kind from "../language/kinds";
 import type {
   Document,
   OperationDefinition,
   Variable,
   SelectionSet,
   FragmentSpread,
-  FragmentDefinition,
-} from '../language/ast';
-import { GraphQLSchema } from '../type/schema';
+  FragmentDefinition
+} from "../language/ast";
+import { GraphQLSchema } from "../type/schema";
 import type {
   GraphQLInputType,
   GraphQLOutputType,
   GraphQLCompositeType,
   GraphQLFieldDefinition,
   GraphQLArgument
-} from '../type/definition';
-import type { GraphQLDirective } from '../type/directives';
-import { TypeInfo } from '../utilities/TypeInfo';
-import { specifiedRules } from './specifiedRules';
-
+} from "../type/definition";
+import type { GraphQLDirective } from "../type/directives";
+import { TypeInfo } from "../utilities/TypeInfo";
+import { specifiedRules } from "./specifiedRules";
 
 /**
  * Implements the "Validation" section of the spec.
@@ -51,12 +50,12 @@ export function validate(
   ast: Document,
   rules?: Array<any>
 ): Array<GraphQLError> {
-  invariant(schema, 'Must provide schema');
-  invariant(ast, 'Must provide document');
+  invariant(schema, "Must provide schema");
+  invariant(ast, "Must provide document");
   invariant(
     schema instanceof GraphQLSchema,
-    'Schema must be an instance of GraphQLSchema. Also ensure that there are ' +
-    'not multiple versions of GraphQL installed in your node_modules directory.'
+    "Schema must be an instance of GraphQLSchema. Also ensure that there are " +
+      "not multiple versions of GraphQL installed in your node_modules directory."
   );
   const typeInfo = new TypeInfo(schema);
   return visitUsingRules(schema, typeInfo, ast, rules || specifiedRules);
@@ -94,10 +93,12 @@ export class ValidationContext {
   _ast: Document;
   _typeInfo: TypeInfo;
   _errors: Array<GraphQLError>;
-  _fragments: {[name: string]: FragmentDefinition};
+  _fragments: { [name: string]: FragmentDefinition };
   _fragmentSpreads: Map<HasSelectionSet, Array<FragmentSpread>>;
-  _recursivelyReferencedFragments:
-    Map<OperationDefinition, Array<FragmentDefinition>>;
+  _recursivelyReferencedFragments: Map<
+    OperationDefinition,
+    Array<FragmentDefinition>
+  >;
   _variableUsages: Map<HasSelectionSet, Array<VariableUsage>>;
   _recursiveVariableUsages: Map<OperationDefinition, Array<VariableUsage>>;
 
@@ -131,13 +132,15 @@ export class ValidationContext {
   getFragment(name: string): ?FragmentDefinition {
     let fragments = this._fragments;
     if (!fragments) {
-      this._fragments = fragments =
-        this.getDocument().definitions.reduce((frags, statement) => {
+      this._fragments = fragments = this.getDocument().definitions.reduce(
+        (frags, statement) => {
           if (statement.kind === Kind.FRAGMENT_DEFINITION) {
             frags[statement.name.value] = statement;
           }
           return frags;
-        }, {});
+        },
+        {}
+      );
     }
     return fragments[name];
   }
@@ -146,7 +149,7 @@ export class ValidationContext {
     let spreads = this._fragmentSpreads.get(node);
     if (!spreads) {
       spreads = [];
-      const setsToVisit: Array<SelectionSet> = [ node.selectionSet ];
+      const setsToVisit: Array<SelectionSet> = [node.selectionSet];
       while (setsToVisit.length !== 0) {
         const set = setsToVisit.pop();
         for (let i = 0; i < set.selections.length; i++) {
@@ -170,7 +173,7 @@ export class ValidationContext {
     if (!fragments) {
       fragments = [];
       const collectedNames = Object.create(null);
-      const nodesToVisit: Array<HasSelectionSet> = [ operation ];
+      const nodesToVisit: Array<HasSelectionSet> = [operation];
       while (nodesToVisit.length !== 0) {
         const node = nodesToVisit.pop();
         const spreads = this.getFragmentSpreads(node);
@@ -196,12 +199,15 @@ export class ValidationContext {
     if (!usages) {
       const newUsages = [];
       const typeInfo = new TypeInfo(this._schema);
-      visit(node, visitWithTypeInfo(typeInfo, {
-        VariableDefinition: () => false,
-        Variable(variable) {
-          newUsages.push({ node: variable, type: typeInfo.getInputType() });
-        }
-      }));
+      visit(
+        node,
+        visitWithTypeInfo(typeInfo, {
+          VariableDefinition: () => false,
+          Variable(variable) {
+            newUsages.push({ node: variable, type: typeInfo.getInputType() });
+          }
+        })
+      );
       usages = newUsages;
       this._variableUsages.set(node, usages);
     }

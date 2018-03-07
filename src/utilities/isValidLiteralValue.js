@@ -8,25 +8,20 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { print } from '../language/printer';
-import type { Value, ListValue, ObjectValue } from '../language/ast';
-import {
-  VARIABLE,
-  LIST,
-  OBJECT
-} from '../language/kinds';
+import { print } from "../language/printer";
+import type { Value, ListValue, ObjectValue } from "../language/ast";
+import { VARIABLE, LIST, OBJECT } from "../language/kinds";
 import {
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLNonNull
-} from '../type/definition';
-import type { GraphQLInputType } from '../type/definition';
-import invariant from '../jsutils/invariant';
-import keyMap from '../jsutils/keyMap';
-import isNullish from '../jsutils/isNullish';
-
+} from "../type/definition";
+import type { GraphQLInputType } from "../type/definition";
+import invariant from "../jsutils/invariant";
+import keyMap from "../jsutils/keyMap";
+import isNullish from "../jsutils/isNullish";
 
 /**
  * Utility for validators which determines if a value literal AST is valid given
@@ -38,14 +33,14 @@ import isNullish from '../jsutils/isNullish';
 export function isValidLiteralValue(
   type: GraphQLInputType,
   valueAST: Value
-): [ string ] {
+): [string] {
   // A value must be provided if the type is non-null.
   if (type instanceof GraphQLNonNull) {
     if (!valueAST) {
       if (type.ofType.name) {
-        return [ `Expected "${type.ofType.name}!", found null.` ];
+        return [`Expected "${type.ofType.name}!", found null.`];
       }
-      return [ 'Expected non-null value, found null.' ];
+      return ["Expected non-null value, found null."];
     }
     return isValidLiteralValue(type.ofType, valueAST);
   }
@@ -66,9 +61,9 @@ export function isValidLiteralValue(
     if (valueAST.kind === LIST) {
       return (valueAST: ListValue).values.reduce((acc, itemAST, index) => {
         const errors = isValidLiteralValue(itemType, itemAST);
-        return acc.concat(errors.map(error =>
-          `In element #${index}: ${error}`
-        ));
+        return acc.concat(
+          errors.map(error => `In element #${index}: ${error}`)
+        );
       }, []);
     }
     return isValidLiteralValue(itemType, valueAST);
@@ -77,7 +72,7 @@ export function isValidLiteralValue(
   // Input objects check each defined field and look for undefined fields.
   if (type instanceof GraphQLInputObjectType) {
     if (valueAST.kind !== OBJECT) {
-      return [ `Expected "${type.name}", found not an object.` ];
+      return [`Expected "${type.name}", found not an object.`];
     }
     const fields = type.getFields();
 
@@ -100,9 +95,7 @@ export function isValidLiteralValue(
         fields[fieldName].type,
         fieldASTMap[fieldName] && fieldASTMap[fieldName].value
       );
-      errors.push(...(result.map(error =>
-        `In field "${fieldName}": ${error}`
-      )));
+      errors.push(...result.map(error => `In field "${fieldName}": ${error}`));
     }
 
     return errors;
@@ -110,14 +103,14 @@ export function isValidLiteralValue(
 
   invariant(
     type instanceof GraphQLScalarType || type instanceof GraphQLEnumType,
-    'Must be input type'
+    "Must be input type"
   );
 
   // Scalar/Enum input checks to ensure the type can parse the value to
   // a non-null value.
   const parseResult = type.parseLiteral(valueAST);
   if (isNullish(parseResult)) {
-    return [ `Expected type "${type.name}", found ${print(valueAST)}.` ];
+    return [`Expected type "${type.name}", found ${print(valueAST)}.`];
   }
 
   return [];

@@ -8,9 +8,9 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { getLocation } from '../language/location';
-import type { Source } from '../language/source';
-import { GraphQLError } from './GraphQLError';
+import { getLocation } from "../language/location";
+import type { Source } from "../language/source";
+import { GraphQLError } from "./GraphQLError";
 
 /**
  * Produces a GraphQLError representing a syntax error, containing useful
@@ -24,11 +24,13 @@ export function syntaxError(
   const location = getLocation(source, position);
   const error = new GraphQLError(
     `Syntax Error ${source.name} (${location.line}:${location.column}) ` +
-    description + '\n\n' + highlightSourceAtLocation(source, location),
+      description +
+      "\n\n" +
+      highlightSourceAtLocation(source, location),
     undefined,
     undefined,
     source,
-    [ position ]
+    [position]
   );
   return error;
 }
@@ -45,15 +47,21 @@ function highlightSourceAtLocation(source, location) {
   const padLen = nextLineNum.length;
   const lines = source.body.split(/\r\n|[\n\r]/g);
   return (
-    (line >= 2 ?
-      lpad(padLen, prevLineNum) + ': ' + lines[line - 2] + '\n' : '') +
-    lpad(padLen, lineNum) + ': ' + lines[line - 1] + '\n' +
-    Array(2 + padLen + location.column).join(' ') + '^\n' +
-    (line < lines.length ?
-      lpad(padLen, nextLineNum) + ': ' + lines[line] + '\n' : '')
+    (line >= 2
+      ? lpad(padLen, prevLineNum) + ": " + lines[line - 2] + "\n"
+      : "") +
+    lpad(padLen, lineNum) +
+    ": " +
+    lines[line - 1] +
+    "\n" +
+    Array(2 + padLen + location.column).join(" ") +
+    "^\n" +
+    (line < lines.length
+      ? lpad(padLen, nextLineNum) + ": " + lines[line] + "\n"
+      : "")
   );
 }
 
 function lpad(len, str) {
-  return Array(len - str.length + 1).join(' ') + str;
+  return Array(len - str.length + 1).join(" ") + str;
 }

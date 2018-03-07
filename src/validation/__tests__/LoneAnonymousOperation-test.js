@@ -7,41 +7,47 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { describe, it } from 'mocha';
-import { expectPassesRule, expectFailsRule } from './harness';
+import { describe, it } from "mocha";
+import { expectPassesRule, expectFailsRule } from "./harness";
 import {
   LoneAnonymousOperation,
-  anonOperationNotAloneMessage,
-} from '../rules/LoneAnonymousOperation';
-
+  anonOperationNotAloneMessage
+} from "../rules/LoneAnonymousOperation";
 
 function anonNotAlone(line, column) {
   return {
     message: anonOperationNotAloneMessage(),
-    locations: [ { line, column } ],
+    locations: [{ line, column }]
   };
 }
 
-describe('Validate: Anonymous operation must be alone', () => {
-
-  it('no operations', () => {
-    expectPassesRule(LoneAnonymousOperation, `
+describe("Validate: Anonymous operation must be alone", () => {
+  it("no operations", () => {
+    expectPassesRule(
+      LoneAnonymousOperation,
+      `
       fragment fragA on Type {
         field
       }
-    `);
+    `
+    );
   });
 
-  it('one anon operation', () => {
-    expectPassesRule(LoneAnonymousOperation, `
+  it("one anon operation", () => {
+    expectPassesRule(
+      LoneAnonymousOperation,
+      `
       {
         field
       }
-    `);
+    `
+    );
   });
 
-  it('multiple named operations', () => {
-    expectPassesRule(LoneAnonymousOperation, `
+  it("multiple named operations", () => {
+    expectPassesRule(
+      LoneAnonymousOperation,
+      `
       query Foo {
         field
       }
@@ -49,58 +55,66 @@ describe('Validate: Anonymous operation must be alone', () => {
       query Bar {
         field
       }
-    `);
+    `
+    );
   });
 
-  it('anon operation with fragment', () => {
-    expectPassesRule(LoneAnonymousOperation, `
+  it("anon operation with fragment", () => {
+    expectPassesRule(
+      LoneAnonymousOperation,
+      `
       {
         ...Foo
       }
       fragment Foo on Type {
         field
       }
-    `);
+    `
+    );
   });
 
-  it('multiple anon operations', () => {
-    expectFailsRule(LoneAnonymousOperation, `
+  it("multiple anon operations", () => {
+    expectFailsRule(
+      LoneAnonymousOperation,
+      `
       {
         fieldA
       }
       {
         fieldB
       }
-    `, [
-      anonNotAlone(2, 7),
-      anonNotAlone(5, 7)
-    ]);
+    `,
+      [anonNotAlone(2, 7), anonNotAlone(5, 7)]
+    );
   });
 
-  it('anon operation with a mutation', () => {
-    expectFailsRule(LoneAnonymousOperation, `
+  it("anon operation with a mutation", () => {
+    expectFailsRule(
+      LoneAnonymousOperation,
+      `
       {
         fieldA
       }
       mutation Foo {
         fieldB
       }
-    `, [
-      anonNotAlone(2, 7)
-    ]);
+    `,
+      [anonNotAlone(2, 7)]
+    );
   });
 
-  it('anon operation with a subscription', () => {
-    expectFailsRule(LoneAnonymousOperation, `
+  it("anon operation with a subscription", () => {
+    expectFailsRule(
+      LoneAnonymousOperation,
+      `
       {
         fieldA
       }
       subscription Foo {
         fieldB
       }
-    `, [
-      anonNotAlone(2, 7)
-    ]);
+    `,
+      [anonNotAlone(2, 7)]
+    );
   });
-
 });

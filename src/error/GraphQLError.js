@@ -8,10 +8,9 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { getLocation } from '../language';
-import type { Node } from '../language/ast';
-import type { Source } from '../language/source';
-
+import { getLocation } from "../language";
+import type { Node } from "../language/ast";
+import type { Source } from "../language/source";
 
 export class GraphQLError extends Error {
   message: string;
@@ -25,7 +24,7 @@ export class GraphQLError extends Error {
   constructor(
     message: string,
     // A flow bug keeps us from declaring nodes as an array of Node
-    nodes?: Array<any/* Node */>,
+    nodes?: Array<any /* Node */>,
     stack?: ?string,
     source?: Source,
     positions?: Array<number>
@@ -33,42 +32,54 @@ export class GraphQLError extends Error {
     super(message);
     this.message = message;
 
-    Object.defineProperty(this, 'stack', { value: stack || message });
-    Object.defineProperty(this, 'nodes', { value: nodes });
+    Object.defineProperty(this, "stack", { value: stack || message });
+    Object.defineProperty(this, "nodes", { value: nodes });
 
     // Note: flow does not yet know about Object.defineProperty with `get`.
-    Object.defineProperty(this, 'source', ({
-      get() {
-        if (source) {
-          return source;
-        }
-        if (nodes && nodes.length > 0) {
-          const node = nodes[0];
-          return node && node.loc && node.loc.source;
-        }
-      }
-    }: any));
-
-    Object.defineProperty(this, 'positions', ({
-      get() {
-        if (positions) {
-          return positions;
-        }
-        if (nodes) {
-          const nodePositions = nodes.map(node => node.loc && node.loc.start);
-          if (nodePositions.some(p => p)) {
-            return nodePositions;
+    Object.defineProperty(
+      this,
+      "source",
+      ({
+        get() {
+          if (source) {
+            return source;
+          }
+          if (nodes && nodes.length > 0) {
+            const node = nodes[0];
+            return node && node.loc && node.loc.source;
           }
         }
-      }
-    }: any));
+      }: any)
+    );
 
-    Object.defineProperty(this, 'locations', ({
-      get() {
-        if (this.positions && this.source) {
-          return this.positions.map(pos => getLocation(this.source, pos));
+    Object.defineProperty(
+      this,
+      "positions",
+      ({
+        get() {
+          if (positions) {
+            return positions;
+          }
+          if (nodes) {
+            const nodePositions = nodes.map(node => node.loc && node.loc.start);
+            if (nodePositions.some(p => p)) {
+              return nodePositions;
+            }
+          }
         }
-      }
-    }: any));
+      }: any)
+    );
+
+    Object.defineProperty(
+      this,
+      "locations",
+      ({
+        get() {
+          if (this.positions && this.source) {
+            return this.positions.map(pos => getLocation(this.source, pos));
+          }
+        }
+      }: any)
+    );
   }
 }

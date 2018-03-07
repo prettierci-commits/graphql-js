@@ -10,15 +10,11 @@
 // 80+ char lines are useful in describe/it, so ignore in this file.
 /* eslint-disable max-len */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { execute } from '../execute';
-import { parse } from '../../language';
-import {
-  GraphQLSchema,
-  GraphQLObjectType,
-  GraphQLInt,
-} from '../../type';
+import { expect } from "chai";
+import { describe, it } from "mocha";
+import { execute } from "../execute";
+import { parse } from "../../language";
+import { GraphQLSchema, GraphQLObjectType, GraphQLInt } from "../../type";
 
 class NumberHolder {
   theNumber: number;
@@ -49,13 +45,13 @@ class Root {
   }
 
   failToChangeTheNumber(): Object {
-    throw new Error('Cannot change the number');
+    throw new Error("Cannot change the number");
   }
 
   promiseAndFailToChangeTheNumber(): Promise<Object> {
     return new Promise((resolve, reject) => {
       process.nextTick(() => {
-        reject(new Error('Cannot change the number'));
+        reject(new Error("Cannot change the number"));
       });
     });
   }
@@ -63,55 +59,54 @@ class Root {
 
 const numberHolderType = new GraphQLObjectType({
   fields: {
-    theNumber: { type: GraphQLInt },
+    theNumber: { type: GraphQLInt }
   },
-  name: 'NumberHolder',
+  name: "NumberHolder"
 });
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     fields: {
-      numberHolder: { type: numberHolderType },
+      numberHolder: { type: numberHolderType }
     },
-    name: 'Query',
+    name: "Query"
   }),
   mutation: new GraphQLObjectType({
     fields: {
       immediatelyChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: (function (obj, { newNumber }) {
+        resolve: (function(obj, { newNumber }) {
           return obj.immediatelyChangeTheNumber(newNumber);
-        }:any)
+        }: any)
       },
       promiseToChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: (function (obj, { newNumber }) {
+        resolve: (function(obj, { newNumber }) {
           return obj.promiseToChangeTheNumber(newNumber);
-        }:any)
+        }: any)
       },
       failToChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: (function (obj, { newNumber }) {
+        resolve: (function(obj, { newNumber }) {
           return obj.failToChangeTheNumber(newNumber);
-        }:any)
+        }: any)
       },
       promiseAndFailToChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: (function (obj, { newNumber }) {
+        resolve: (function(obj, { newNumber }) {
           return obj.promiseAndFailToChangeTheNumber(newNumber);
-        }:any)
+        }: any)
       }
     },
-    name: 'Mutation',
+    name: "Mutation"
   })
 });
 
-describe('Execute: Handles mutation execution ordering', () => {
-
-  it('evaluates mutations serially', async () => {
+describe("Execute: Handles mutation execution ordering", () => {
+  it("evaluates mutations serially", async () => {
     const doc = `mutation M {
       first: immediatelyChangeTheNumber(newNumber: 1) {
         theNumber
@@ -153,7 +148,7 @@ describe('Execute: Handles mutation execution ordering', () => {
     });
   });
 
-  it('evaluates mutations correctly in the presense of a failed mutation', async () => {
+  it("evaluates mutations correctly in the presense of a failed mutation", async () => {
     const doc = `mutation M {
       first: immediatelyChangeTheNumber(newNumber: 1) {
         theNumber
@@ -191,15 +186,19 @@ describe('Execute: Handles mutation execution ordering', () => {
       fifth: {
         theNumber: 5
       },
-      sixth: null,
+      sixth: null
     });
 
     expect(result.errors).to.have.length(2);
     expect(result.errors).to.containSubset([
-      { message: 'Cannot change the number',
-        locations: [ { line: 8, column: 7 } ] },
-      { message: 'Cannot change the number',
-        locations: [ { line: 17, column: 7 } ] }
+      {
+        message: "Cannot change the number",
+        locations: [{ line: 8, column: 7 }]
+      },
+      {
+        message: "Cannot change the number",
+        locations: [{ line: 17, column: 7 }]
+      }
     ]);
   });
 });

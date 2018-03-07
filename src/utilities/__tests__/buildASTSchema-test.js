@@ -7,11 +7,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { parse } from '../../language';
-import { printSchema } from '../schemaPrinter';
-import { buildASTSchema } from '../buildASTSchema';
+import { expect } from "chai";
+import { describe, it } from "mocha";
+import { parse } from "../../language";
+import { printSchema } from "../schemaPrinter";
+import { buildASTSchema } from "../buildASTSchema";
 
 /**
  * This function does a full cycle of going from a
@@ -23,11 +23,11 @@ import { buildASTSchema } from '../buildASTSchema';
 function cycleOutput(body) {
   const ast = parse(body);
   const schema = buildASTSchema(ast);
-  return '\n' + printSchema(schema);
+  return "\n" + printSchema(schema);
 }
 
-describe('Schema Builder', () => {
-  it('Simple type', () => {
+describe("Schema Builder", () => {
+  it("Simple type", () => {
     const body = `
 schema {
   query: HelloScalars
@@ -45,7 +45,7 @@ type HelloScalars {
     expect(output).to.equal(body);
   });
 
-  it('With directives', () => {
+  it("With directives", () => {
     const body = `
 schema {
   query: Hello
@@ -61,7 +61,7 @@ type Hello {
     expect(output).to.equal(body);
   });
 
-  it('Type modifiers', () => {
+  it("Type modifiers", () => {
     const body = `
 schema {
   query: HelloScalars
@@ -79,8 +79,7 @@ type HelloScalars {
     expect(output).to.equal(body);
   });
 
-
-  it('Recursive type', () => {
+  it("Recursive type", () => {
     const body = `
 schema {
   query: Recurse
@@ -95,7 +94,7 @@ type Recurse {
     expect(output).to.equal(body);
   });
 
-  it('Two types circular', () => {
+  it("Two types circular", () => {
     const body = `
 schema {
   query: TypeOne
@@ -115,7 +114,7 @@ type TypeTwo {
     expect(output).to.equal(body);
   });
 
-  it('Single argument field', () => {
+  it("Single argument field", () => {
     const body = `
 schema {
   query: Hello
@@ -133,7 +132,7 @@ type Hello {
     expect(output).to.equal(body);
   });
 
-  it('Simple type with multiple arguments', () => {
+  it("Simple type with multiple arguments", () => {
     const body = `
 schema {
   query: Hello
@@ -143,11 +142,11 @@ type Hello {
   str(int: Int, bool: Boolean): String
 }
 `;
-    const output = cycleOutput(body, 'Hello');
+    const output = cycleOutput(body, "Hello");
     expect(output).to.equal(body);
   });
 
-  it('Simple type with interface', () => {
+  it("Simple type with interface", () => {
     const body = `
 schema {
   query: Hello
@@ -161,11 +160,11 @@ interface WorldInterface {
   str: String
 }
 `;
-    const output = cycleOutput(body, 'Hello');
+    const output = cycleOutput(body, "Hello");
     expect(output).to.equal(body);
   });
 
-  it('Simple output enum', () => {
+  it("Simple output enum", () => {
     const body = `
 schema {
   query: OutputEnumRoot
@@ -183,7 +182,7 @@ type OutputEnumRoot {
     expect(output).to.equal(body);
   });
 
-  it('Simple input enum', () => {
+  it("Simple input enum", () => {
     const body = `
 schema {
   query: InputEnumRoot
@@ -201,7 +200,7 @@ type InputEnumRoot {
     expect(output).to.equal(body);
   });
 
-  it('Multiple value enum', () => {
+  it("Multiple value enum", () => {
     const body = `
 schema {
   query: OutputEnumRoot
@@ -220,7 +219,7 @@ type OutputEnumRoot {
     expect(output).to.equal(body);
   });
 
-  it('Simple Union', () => {
+  it("Simple Union", () => {
     const body = `
 schema {
   query: Root
@@ -240,7 +239,7 @@ type World {
     expect(output).to.equal(body);
   });
 
-  it('Multiple Union', () => {
+  it("Multiple Union", () => {
     const body = `
 schema {
   query: Root
@@ -264,7 +263,7 @@ type WorldTwo {
     expect(output).to.equal(body);
   });
 
-  it('Custom Scalar', () => {
+  it("Custom Scalar", () => {
     const body = `
 schema {
   query: Root
@@ -281,7 +280,7 @@ type Root {
     expect(output).to.equal(body);
   });
 
-  it('Input Object', async() => {
+  it("Input Object", async () => {
     const body = `
 schema {
   query: Root
@@ -300,7 +299,7 @@ type Root {
     expect(output).to.equal(body);
   });
 
-  it('Simple argument field with default', () => {
+  it("Simple argument field with default", () => {
     const body = `
 schema {
   query: Hello
@@ -314,7 +313,7 @@ type Hello {
     expect(output).to.equal(body);
   });
 
-  it('Simple type with mutation', () => {
+  it("Simple type with mutation", () => {
     const body = `
 schema {
   query: HelloScalars
@@ -335,7 +334,7 @@ type Mutation {
     expect(output).to.equal(body);
   });
 
-  it('Simple type with subscription', () => {
+  it("Simple type with subscription", () => {
     const body = `
 schema {
   query: HelloScalars
@@ -356,7 +355,7 @@ type Subscription {
     expect(output).to.equal(body);
   });
 
-  it('Unreferenced type implementing referenced interface', () => {
+  it("Unreferenced type implementing referenced interface", () => {
     const body = `
 schema {
   query: Query
@@ -378,7 +377,7 @@ type Query {
     expect(output).to.equal(body);
   });
 
-  it('Unreferenced type implementing referenced union', () => {
+  it("Unreferenced type implementing referenced union", () => {
     const body = `
 schema {
   query: Query
@@ -399,20 +398,20 @@ union Union = Concrete
   });
 });
 
-describe('Failures', () => {
-
-  it('Requires a schema definition', () => {
+describe("Failures", () => {
+  it("Requires a schema definition", () => {
     const body = `
 type Hello {
   bar: Bar
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Must provide a schema definition.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      "Must provide a schema definition."
+    );
   });
 
-  it('Allows only a single schema definition', () => {
+  it("Allows only a single schema definition", () => {
     const body = `
 schema {
   query: Hello
@@ -427,11 +426,12 @@ type Hello {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Must provide only one schema definition.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      "Must provide only one schema definition."
+    );
   });
 
-  it('Requires a query type', () => {
+  it("Requires a query type", () => {
     const body = `
 schema {
   mutation: Hello
@@ -442,11 +442,12 @@ type Hello {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Must provide schema definition with query type.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      "Must provide schema definition with query type."
+    );
   });
 
-  it('Allows only a single query type', () => {
+  it("Allows only a single query type", () => {
     const body = `
 schema {
   query: Hello
@@ -462,11 +463,12 @@ type Yellow {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Must provide only one query type in schema.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      "Must provide only one query type in schema."
+    );
   });
 
-  it('Allows only a single mutation type', () => {
+  it("Allows only a single mutation type", () => {
     const body = `
 schema {
   query: Hello
@@ -483,11 +485,12 @@ type Yellow {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Must provide only one mutation type in schema.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      "Must provide only one mutation type in schema."
+    );
   });
 
-  it('Allows only a single subscription type', () => {
+  it("Allows only a single subscription type", () => {
     const body = `
 schema {
   query: Hello
@@ -504,11 +507,12 @@ type Yellow {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Must provide only one subscription type in schema.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      "Must provide only one subscription type in schema."
+    );
   });
 
-  it('Unknown type referenced', () => {
+  it("Unknown type referenced", () => {
     const body = `
 schema {
   query: Hello
@@ -519,11 +523,12 @@ type Hello {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Type "Bar" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Type "Bar" not found in document.'
+    );
   });
 
-  it('Unknown type in interface list', () => {
+  it("Unknown type in interface list", () => {
     const body = `
 schema {
   query: Hello
@@ -532,11 +537,12 @@ schema {
 type Hello implements Bar { }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Type "Bar" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Type "Bar" not found in document.'
+    );
   });
 
-  it('Unknown type in union list', () => {
+  it("Unknown type in union list", () => {
     const body = `
 schema {
   query: Hello
@@ -546,11 +552,12 @@ union TestUnion = Bar
 type Hello { testUnion: TestUnion }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Type "Bar" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Type "Bar" not found in document.'
+    );
   });
 
-  it('Unknown query type', () => {
+  it("Unknown query type", () => {
     const body = `
 schema {
   query: Wat
@@ -561,11 +568,12 @@ type Hello {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Specified query type "Wat" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Specified query type "Wat" not found in document.'
+    );
   });
 
-  it('Unknown mutation type', () => {
+  it("Unknown mutation type", () => {
     const body = `
 schema {
   query: Hello
@@ -577,11 +585,12 @@ type Hello {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Specified mutation type "Wat" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Specified mutation type "Wat" not found in document.'
+    );
   });
 
-  it('Unknown subscription type', () => {
+  it("Unknown subscription type", () => {
     const body = `
 schema {
   query: Hello
@@ -598,11 +607,12 @@ type Wat {
 }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Specified subscription type "Awesome" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Specified subscription type "Awesome" not found in document.'
+    );
   });
 
-  it('Does not consider operation names', () => {
+  it("Does not consider operation names", () => {
     const body = `
 schema {
   query: Foo
@@ -611,11 +621,12 @@ schema {
 query Foo { field }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Specified query type "Foo" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Specified query type "Foo" not found in document.'
+    );
   });
 
-  it('Does not consider fragment names', () => {
+  it("Does not consider fragment names", () => {
     const body = `
 schema {
   query: Foo
@@ -624,8 +635,8 @@ schema {
 fragment Foo on Type { field }
 `;
     const doc = parse(body);
-    expect(() => buildASTSchema(doc))
-      .to.throw('Specified query type "Foo" not found in document.');
+    expect(() => buildASTSchema(doc)).to.throw(
+      'Specified query type "Foo" not found in document.'
+    );
   });
-
 });

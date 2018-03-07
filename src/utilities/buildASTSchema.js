@@ -8,15 +8,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import keyMap from '../jsutils/keyMap';
-import keyValMap from '../jsutils/keyValMap';
-import { valueFromAST } from './valueFromAST';
+import invariant from "../jsutils/invariant";
+import keyMap from "../jsutils/keyMap";
+import keyValMap from "../jsutils/keyValMap";
+import { valueFromAST } from "./valueFromAST";
 
-import {
-  LIST_TYPE,
-  NON_NULL_TYPE,
-} from '../language/kinds';
+import { LIST_TYPE, NON_NULL_TYPE } from "../language/kinds";
 
 import {
   DOCUMENT,
@@ -27,8 +24,8 @@ import {
   ENUM_TYPE_DEFINITION,
   UNION_TYPE_DEFINITION,
   INPUT_OBJECT_TYPE_DEFINITION,
-  DIRECTIVE_DEFINITION,
-} from '../language/kinds';
+  DIRECTIVE_DEFINITION
+} from "../language/kinds";
 
 import type {
   Document,
@@ -43,8 +40,8 @@ import type {
   UnionTypeDefinition,
   EnumTypeDefinition,
   InputObjectTypeDefinition,
-  DirectiveDefinition,
-} from '../language/ast';
+  DirectiveDefinition
+} from "../language/ast";
 
 import {
   GraphQLSchema,
@@ -60,10 +57,10 @@ import {
   GraphQLBoolean,
   GraphQLID,
   GraphQLList,
-  GraphQLNonNull,
-} from '../type';
+  GraphQLNonNull
+} from "../type";
 
-import { GraphQLDirective } from '../type/directives';
+import { GraphQLDirective } from "../type/directives";
 
 import {
   __Schema,
@@ -73,19 +70,15 @@ import {
   __Field,
   __InputValue,
   __EnumValue,
-  __TypeKind,
-} from '../type/introspection';
+  __TypeKind
+} from "../type/introspection";
 
-import type {
-  GraphQLType,
-  GraphQLNamedType
-} from '../type/definition';
-
+import type { GraphQLType, GraphQLNamedType } from "../type/definition";
 
 type CompositeDefinition =
-  ObjectTypeDefinition |
-  InterfaceTypeDefinition |
-  UnionTypeDefinition;
+  | ObjectTypeDefinition
+  | InterfaceTypeDefinition
+  | UnionTypeDefinition;
 
 function buildWrappedType(
   innerType: GraphQLType,
@@ -96,7 +89,7 @@ function buildWrappedType(
   }
   if (inputTypeAST.kind === NON_NULL_TYPE) {
     const wrappedType = buildWrappedType(innerType, inputTypeAST.type);
-    invariant(!(wrappedType instanceof GraphQLNonNull), 'No nesting nonnull.');
+    invariant(!(wrappedType instanceof GraphQLNonNull), "No nesting nonnull.");
     return new GraphQLNonNull(wrappedType);
   }
   return innerType;
@@ -120,7 +113,7 @@ function getNamedTypeAST(typeAST: Type): NamedType {
  */
 export function buildASTSchema(ast: Document): GraphQLSchema {
   if (!ast || ast.kind !== DOCUMENT) {
-    throw new Error('Must provide a document ast.');
+    throw new Error("Must provide a document ast.");
   }
 
   let schemaDef: ?SchemaDefinition;
@@ -132,7 +125,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
     switch (d.kind) {
       case SCHEMA_DEFINITION:
         if (schemaDef) {
-          throw new Error('Must provide only one schema definition.');
+          throw new Error("Must provide only one schema definition.");
         }
         schemaDef = d;
         break;
@@ -151,7 +144,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
   }
 
   if (!schemaDef) {
-    throw new Error('Must provide a schema definition.');
+    throw new Error("Must provide a schema definition.");
   }
 
   let queryTypeName;
@@ -159,30 +152,32 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
   let subscriptionTypeName;
   schemaDef.operationTypes.forEach(operationType => {
     const typeName = operationType.type.name.value;
-    if (operationType.operation === 'query') {
+    if (operationType.operation === "query") {
       if (queryTypeName) {
-        throw new Error('Must provide only one query type in schema.');
+        throw new Error("Must provide only one query type in schema.");
       }
       queryTypeName = typeName;
-    } else if (operationType.operation === 'mutation') {
+    } else if (operationType.operation === "mutation") {
       if (mutationTypeName) {
-        throw new Error('Must provide only one mutation type in schema.');
+        throw new Error("Must provide only one mutation type in schema.");
       }
       mutationTypeName = typeName;
-    } else if (operationType.operation === 'subscription') {
+    } else if (operationType.operation === "subscription") {
       if (subscriptionTypeName) {
-        throw new Error('Must provide only one subscription type in schema.');
+        throw new Error("Must provide only one subscription type in schema.");
       }
       subscriptionTypeName = typeName;
     }
   });
 
   if (!queryTypeName) {
-    throw new Error('Must provide schema definition with query type.');
+    throw new Error("Must provide schema definition with query type.");
   }
 
-  const astMap: {[name: string]: TypeDefinition} =
-    keyMap(typeDefs, d => d.name.value);
+  const astMap: { [name: string]: TypeDefinition } = keyMap(
+    typeDefs,
+    d => d.name.value
+  );
 
   if (!astMap[queryTypeName]) {
     throw new Error(
@@ -198,8 +193,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
 
   if (subscriptionTypeName && !astMap[subscriptionTypeName]) {
     throw new Error(
-      `Specified subscription type "${
-        subscriptionTypeName}" not found in document.`
+      `Specified subscription type "${subscriptionTypeName}" not found in document.`
     );
   }
 
@@ -216,7 +210,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
     __Field,
     __InputValue,
     __EnumValue,
-    __TypeKind,
+    __TypeKind
   };
 
   const types = typeDefs.map(def => typeDefNamed(def.name.value));
@@ -226,17 +220,18 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
   return new GraphQLSchema({
     query: getObjectType(astMap[queryTypeName]),
     mutation: mutationTypeName ? getObjectType(astMap[mutationTypeName]) : null,
-    subscription:
-      subscriptionTypeName ? getObjectType(astMap[subscriptionTypeName]) : null,
+    subscription: subscriptionTypeName
+      ? getObjectType(astMap[subscriptionTypeName])
+      : null,
     types,
-    directives,
+    directives
   });
 
   function getDirective(directiveAST: DirectiveDefinition): GraphQLDirective {
     return new GraphQLDirective({
       name: directiveAST.name.value,
       locations: directiveAST.locations.map(node => node.value),
-      args: makeInputValues(directiveAST.arguments),
+      args: makeInputValues(directiveAST.arguments)
     });
   }
 
@@ -244,7 +239,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
     const type = typeDefNamed(typeAST.name.value);
     invariant(
       type instanceof GraphQLObjectType,
-      'AST must provide object type.'
+      "AST must provide object type."
     );
     return (type: any);
   }
@@ -274,7 +269,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
 
   function makeSchemaDef(def) {
     if (!def) {
-      throw new Error('def must be defined');
+      throw new Error("def must be defined");
     }
     switch (def.kind) {
       case OBJECT_TYPE_DEFINITION:
@@ -299,7 +294,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
     const config = {
       name: typeName,
       fields: () => makeFieldDefMap(def),
-      interfaces: () => makeImplementedInterfaces(def),
+      interfaces: () => makeImplementedInterfaces(def)
     };
     return new GraphQLObjectType(config);
   }
@@ -310,7 +305,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
       field => field.name.value,
       field => ({
         type: produceTypeDef(field.type),
-        args: makeInputValues(field.arguments),
+        args: makeInputValues(field.arguments)
       })
     );
   }
@@ -335,7 +330,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
     const config = {
       name: typeName,
       resolveType: () => null,
-      fields: () => makeFieldDefMap(def),
+      fields: () => makeFieldDefMap(def)
     };
     return new GraphQLInterfaceType(config);
   }
@@ -343,7 +338,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
   function makeEnumDef(def: EnumTypeDefinition) {
     const enumType = new GraphQLEnumType({
       name: def.name.value,
-      values: keyValMap(def.values, v => v.name.value, () => ({})),
+      values: keyValMap(def.values, v => v.name.value, () => ({}))
     });
 
     return enumType;
@@ -353,7 +348,7 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
     return new GraphQLUnionType({
       name: def.name.value,
       resolveType: () => null,
-      types: def.types.map(t => produceTypeDef(t)),
+      types: def.types.map(t => produceTypeDef(t))
     });
   }
 
@@ -366,14 +361,14 @@ export function buildASTSchema(ast: Document): GraphQLSchema {
       // scalars to always fail validation. Returning false causes them to
       // always pass validation.
       parseValue: () => false,
-      parseLiteral: () => false,
+      parseLiteral: () => false
     });
   }
 
   function makeInputObjectDef(def: InputObjectTypeDefinition) {
     return new GraphQLInputObjectType({
       name: def.name.value,
-      fields: () => makeInputValues(def.fields),
+      fields: () => makeInputValues(def.fields)
     });
   }
 }

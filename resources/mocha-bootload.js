@@ -7,12 +7,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-var chai = require('chai');
+var chai = require("chai");
 
-var chaiSubset = require('chai-subset');
+var chaiSubset = require("chai-subset");
 chai.use(chaiSubset);
 
-process.on('unhandledRejection', function (error) {
-  console.error('Unhandled Promise Rejection:');
-  console.error(error && error.stack || error);
+process.on("unhandledRejection", function(error) {
+  console.error("Unhandled Promise Rejection:");
+  console.error((error && error.stack) || error);
 });

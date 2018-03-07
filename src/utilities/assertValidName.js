@@ -8,8 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-
+import invariant from "../jsutils/invariant";
 
 const NAME_RX = /^[_a-zA-Z][_a-zA-Z0-9]*$/;
 

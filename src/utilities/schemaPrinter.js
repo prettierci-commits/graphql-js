@@ -8,21 +8,20 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import isNullish from '../jsutils/isNullish';
-import { astFromValue } from '../utilities/astFromValue';
-import { print } from '../language/printer';
-import type { GraphQLSchema } from '../type/schema';
-import type { GraphQLType } from '../type/definition';
+import invariant from "../jsutils/invariant";
+import isNullish from "../jsutils/isNullish";
+import { astFromValue } from "../utilities/astFromValue";
+import { print } from "../language/printer";
+import type { GraphQLSchema } from "../type/schema";
+import type { GraphQLType } from "../type/definition";
 import {
   GraphQLScalarType,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
-  GraphQLInputObjectType,
-} from '../type/definition';
-
+  GraphQLInputObjectType
+} from "../type/definition";
 
 export function printSchema(schema: GraphQLSchema): string {
   return printFilteredSchema(schema, n => !isSpecDirective(n), isDefinedType);
@@ -33,7 +32,7 @@ export function printIntrospectionSchema(schema: GraphQLSchema): string {
 }
 
 function isSpecDirective(directiveName: string): boolean {
-  return directiveName === 'skip' || directiveName === 'include';
+  return directiveName === "skip" || directiveName === "include";
 }
 
 function isDefinedType(typename: string): boolean {
@@ -41,16 +40,16 @@ function isDefinedType(typename: string): boolean {
 }
 
 function isIntrospectionType(typename: string): boolean {
-  return typename.indexOf('__') === 0;
+  return typename.indexOf("__") === 0;
 }
 
 function isBuiltInScalar(typename: string): boolean {
   return (
-    typename === 'String' ||
-    typename === 'Boolean' ||
-    typename === 'Int' ||
-    typename === 'Float' ||
-    typename === 'ID'
+    typename === "String" ||
+    typename === "Boolean" ||
+    typename === "Int" ||
+    typename === "Float" ||
+    typename === "ID"
   );
 }
 
@@ -59,17 +58,19 @@ function printFilteredSchema(
   directiveFilter: (type: string) => boolean,
   typeFilter: (type: string) => boolean
 ): string {
-  const directives = schema.getDirectives()
+  const directives = schema
+    .getDirectives()
     .filter(directive => directiveFilter(directive.name));
   const typeMap = schema.getTypeMap();
   const types = Object.keys(typeMap)
     .filter(typeFilter)
     .sort((name1, name2) => name1.localeCompare(name2))
     .map(typeName => typeMap[typeName]);
-  return [ printSchemaDefinition(schema) ].concat(
-    directives.map(printDirective),
-    types.map(printType)
-  ).join('\n\n') + '\n';
+  return (
+    [printSchemaDefinition(schema)]
+      .concat(directives.map(printDirective), types.map(printType))
+      .join("\n\n") + "\n"
+  );
 }
 
 function printSchemaDefinition(schema: GraphQLSchema): string {
@@ -90,7 +91,7 @@ function printSchemaDefinition(schema: GraphQLSchema): string {
     operationTypes.push(`  subscription: ${subscriptionType}`);
   }
 
-  return `schema {\n${operationTypes.join('\n')}\n}`;
+  return `schema {\n${operationTypes.join("\n")}\n}`;
 }
 
 function printType(type: GraphQLType): string {
@@ -115,51 +116,57 @@ function printScalar(type: GraphQLScalarType): string {
 
 function printObject(type: GraphQLObjectType): string {
   const interfaces = type.getInterfaces();
-  const implementedInterfaces = interfaces.length ?
-    ' implements ' + interfaces.map(i => i.name).join(', ') : '';
-  return `type ${type.name}${implementedInterfaces} {\n` +
-    printFields(type) + '\n' +
-  '}';
+  const implementedInterfaces = interfaces.length
+    ? " implements " + interfaces.map(i => i.name).join(", ")
+    : "";
+  return (
+    `type ${type.name}${implementedInterfaces} {\n` +
+    printFields(type) +
+    "\n" +
+    "}"
+  );
 }
 
 function printInterface(type: GraphQLInterfaceType): string {
-  return `interface ${type.name} {\n` +
-    printFields(type) + '\n' +
-  '}';
+  return `interface ${type.name} {\n` + printFields(type) + "\n" + "}";
 }
 
 function printUnion(type: GraphQLUnionType): string {
-  return `union ${type.name} = ${type.getTypes().join(' | ')}`;
+  return `union ${type.name} = ${type.getTypes().join(" | ")}`;
 }
 
 function printEnum(type: GraphQLEnumType): string {
   const values = type.getValues();
-  return `enum ${type.name} {\n` +
-    values.map(v => '  ' + v.name).join('\n') + '\n' +
-  '}';
+  return (
+    `enum ${type.name} {\n` +
+    values.map(v => "  " + v.name).join("\n") +
+    "\n" +
+    "}"
+  );
 }
 
 function printInputObject(type: GraphQLInputObjectType): string {
   const fieldMap = type.getFields();
   const fields = Object.keys(fieldMap).map(fieldName => fieldMap[fieldName]);
-  return `input ${type.name} {\n` +
-    fields.map(f => '  ' + printInputValue(f)).join('\n') + '\n' +
-  '}';
+  return (
+    `input ${type.name} {\n` +
+    fields.map(f => "  " + printInputValue(f)).join("\n") +
+    "\n" +
+    "}"
+  );
 }
 
 function printFields(type) {
   const fieldMap = type.getFields();
   const fields = Object.keys(fieldMap).map(fieldName => fieldMap[fieldName]);
-  return fields.map(
-    f => `  ${f.name}${printArgs(f)}: ${f.type}`
-  ).join('\n');
+  return fields.map(f => `  ${f.name}${printArgs(f)}: ${f.type}`).join("\n");
 }
 
 function printArgs(fieldOrDirectives) {
   if (fieldOrDirectives.args.length === 0) {
-    return '';
+    return "";
   }
-  return '(' + fieldOrDirectives.args.map(printInputValue).join(', ') + ')';
+  return "(" + fieldOrDirectives.args.map(printInputValue).join(", ") + ")";
 }
 
 function printInputValue(arg) {
@@ -171,6 +178,11 @@ function printInputValue(arg) {
 }
 
 function printDirective(directive) {
-  return 'directive @' + directive.name + printArgs(directive) +
-    ' on ' + directive.locations.join(' | ');
+  return (
+    "directive @" +
+    directive.name +
+    printArgs(directive) +
+    " on " +
+    directive.locations.join(" | ")
+  );
 }

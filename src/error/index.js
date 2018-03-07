@@ -8,7 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-export { GraphQLError } from './GraphQLError';
-export { syntaxError } from './syntaxError';
-export { locatedError } from './locatedError';
-export { formatError } from './formatError';
+export { GraphQLError } from "./GraphQLError";
+export { syntaxError } from "./syntaxError";
+export { locatedError } from "./locatedError";
+export { formatError } from "./formatError";

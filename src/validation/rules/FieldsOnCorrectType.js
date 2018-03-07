@@ -8,13 +8,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import type { Field } from '../../language/ast';
-import type { GraphQLSchema } from '../../type/schema';
-import type { GraphQLAbstractType } from '../../type/definition';
-import { isAbstractType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import type { Field } from "../../language/ast";
+import type { GraphQLSchema } from "../../type/schema";
+import type { GraphQLAbstractType } from "../../type/definition";
+import { isAbstractType } from "../../type/definition";
 
 export function undefinedFieldMessage(
   fieldName: string,
@@ -27,12 +26,12 @@ export function undefinedFieldMessage(
     let suggestions = suggestedTypes
       .slice(0, MAX_LENGTH)
       .map(t => `"${t}"`)
-      .join(', ');
+      .join(", ");
     if (suggestedTypes.length > MAX_LENGTH) {
       suggestions += `, and ${suggestedTypes.length - MAX_LENGTH} other types`;
     }
     message += ` However, this field exists on ${suggestions}.`;
-    message += ' Perhaps you meant to use an inline fragment?';
+    message += " Perhaps you meant to use an inline fragment?";
   }
   return message;
 }
@@ -63,10 +62,12 @@ export function FieldsOnCorrectType(context: ValidationContext): any {
               getImplementationsIncludingField(schema, type, node.name.value)
             );
           }
-          context.reportError(new GraphQLError(
-            undefinedFieldMessage(node.name.value, type.name, suggestedTypes),
-            [ node ]
-          ));
+          context.reportError(
+            new GraphQLError(
+              undefinedFieldMessage(node.name.value, type.name, suggestedTypes),
+              [node]
+            )
+          );
         }
       }
     }
@@ -81,7 +82,8 @@ function getImplementationsIncludingField(
   type: GraphQLAbstractType,
   fieldName: string
 ): Array<string> {
-  return schema.getPossibleTypes(type)
+  return schema
+    .getPossibleTypes(type)
     .filter(t => t.getFields()[fieldName] !== undefined)
     .map(t => t.name)
     .sort();
@@ -110,7 +112,7 @@ function getSiblingInterfacesIncludingField(
     });
     return acc;
   }, {});
-  return Object.keys(suggestedInterfaces)
-    .sort((a,b) => suggestedInterfaces[b] - suggestedInterfaces[a]);
+  return Object.keys(suggestedInterfaces).sort(
+    (a, b) => suggestedInterfaces[b] - suggestedInterfaces[a]
+  );
 }
-

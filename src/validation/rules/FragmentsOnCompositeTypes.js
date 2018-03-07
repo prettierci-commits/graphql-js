@@ -8,12 +8,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import { print } from '../../language/printer';
-import { isCompositeType } from '../../type/definition';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import { print } from "../../language/printer";
+import { isCompositeType } from "../../type/definition";
+import type { GraphQLType } from "../../type/definition";
 
 export function inlineFragmentOnNonCompositeErrorMessage(
   type: GraphQLType
@@ -25,8 +24,10 @@ export function fragmentOnNonCompositeErrorMessage(
   fragName: string,
   type: GraphQLType
 ): string {
-  return `Fragment "${fragName}" cannot condition on non composite ` +
-    `type "${type}".`;
+  return (
+    `Fragment "${fragName}" cannot condition on non composite ` +
+    `type "${type}".`
+  );
 }
 
 /**
@@ -41,22 +42,26 @@ export function FragmentsOnCompositeTypes(context: ValidationContext): any {
     InlineFragment(node) {
       const type = context.getType();
       if (node.typeCondition && type && !isCompositeType(type)) {
-        context.reportError(new GraphQLError(
-          inlineFragmentOnNonCompositeErrorMessage(print(node.typeCondition)),
-          [ node.typeCondition ]
-        ));
+        context.reportError(
+          new GraphQLError(
+            inlineFragmentOnNonCompositeErrorMessage(print(node.typeCondition)),
+            [node.typeCondition]
+          )
+        );
       }
     },
     FragmentDefinition(node) {
       const type = context.getType();
       if (type && !isCompositeType(type)) {
-        context.reportError(new GraphQLError(
-          fragmentOnNonCompositeErrorMessage(
-            node.name.value,
-            print(node.typeCondition)
-          ),
-          [ node.typeCondition ]
-        ));
+        context.reportError(
+          new GraphQLError(
+            fragmentOnNonCompositeErrorMessage(
+              node.name.value,
+              print(node.typeCondition)
+            ),
+            [node.typeCondition]
+          )
+        );
       }
     }
   };

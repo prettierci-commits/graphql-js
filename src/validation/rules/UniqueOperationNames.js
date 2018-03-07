@@ -8,9 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
 
 export function duplicateOperationNameMessage(operationName: string): string {
   return `There can only be one operation named "${operationName}".`;
@@ -28,16 +27,18 @@ export function UniqueOperationNames(context: ValidationContext): any {
       const operationName = node.name;
       if (operationName) {
         if (knownOperationNames[operationName.value]) {
-          context.reportError(new GraphQLError(
-            duplicateOperationNameMessage(operationName.value),
-            [ knownOperationNames[operationName.value], operationName ]
-          ));
+          context.reportError(
+            new GraphQLError(
+              duplicateOperationNameMessage(operationName.value),
+              [knownOperationNames[operationName.value], operationName]
+            )
+          );
         } else {
           knownOperationNames[operationName.value] = operationName;
         }
       }
       return false;
     },
-    FragmentDefinition: () => false,
+    FragmentDefinition: () => false
   };
 }

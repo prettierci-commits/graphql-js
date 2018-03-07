@@ -8,21 +8,22 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import { print } from '../../language/printer';
-import { GraphQLNonNull } from '../../type/definition';
-import { isValidLiteralValue } from '../../utilities/isValidLiteralValue';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import { print } from "../../language/printer";
+import { GraphQLNonNull } from "../../type/definition";
+import { isValidLiteralValue } from "../../utilities/isValidLiteralValue";
+import type { GraphQLType } from "../../type/definition";
 
 export function defaultForNonNullArgMessage(
   varName: string,
   type: GraphQLType,
   guessType: GraphQLType
 ): string {
-  return `Variable "$${varName}" of type "${type}" is required and will not ` +
-    `use the default value. Perhaps you meant to use type "${guessType}".`;
+  return (
+    `Variable "$${varName}" of type "${type}" is required and will not ` +
+    `use the default value. Perhaps you meant to use type "${guessType}".`
+  );
 }
 
 export function badValueForDefaultArgMessage(
@@ -31,7 +32,7 @@ export function badValueForDefaultArgMessage(
   value: string,
   verboseErrors?: [string]
 ): string {
-  const message = verboseErrors ? '\n' + verboseErrors.join('\n') : '';
+  const message = verboseErrors ? "\n" + verboseErrors.join("\n") : "";
   return `Variable "$${varName}" has invalid default value ${value}.${message}`;
 }
 
@@ -48,28 +49,32 @@ export function DefaultValuesOfCorrectType(context: ValidationContext): any {
       const defaultValue = varDefAST.defaultValue;
       const type = context.getInputType();
       if (type instanceof GraphQLNonNull && defaultValue) {
-        context.reportError(new GraphQLError(
-          defaultForNonNullArgMessage(name, type, type.ofType),
-          [ defaultValue ]
-        ));
+        context.reportError(
+          new GraphQLError(
+            defaultForNonNullArgMessage(name, type, type.ofType),
+            [defaultValue]
+          )
+        );
       }
       if (type && defaultValue) {
         const errors = isValidLiteralValue(type, defaultValue);
         if (errors && errors.length > 0) {
-          context.reportError(new GraphQLError(
-            badValueForDefaultArgMessage(
-              name,
-              type,
-              print(defaultValue),
-              errors
-            ),
-            [ defaultValue ]
-          ));
+          context.reportError(
+            new GraphQLError(
+              badValueForDefaultArgMessage(
+                name,
+                type,
+                print(defaultValue),
+                errors
+              ),
+              [defaultValue]
+            )
+          );
         }
       }
       return false;
     },
     SelectionSet: () => false,
-    FragmentDefinition: () => false,
+    FragmentDefinition: () => false
   };
 }

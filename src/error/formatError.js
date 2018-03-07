@@ -8,16 +8,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import invariant from '../jsutils/invariant';
-import type { GraphQLError } from './GraphQLError';
-
+import invariant from "../jsutils/invariant";
+import type { GraphQLError } from "./GraphQLError";
 
 /**
  * Given a GraphQLError, format it according to the rules described by the
  * Response Format, Errors section of the GraphQL Specification.
  */
 export function formatError(error: GraphQLError): GraphQLFormattedError {
-  invariant(error, 'Received null or undefined error.');
+  invariant(error, "Received null or undefined error.");
   return {
     message: error.message,
     locations: error.locations

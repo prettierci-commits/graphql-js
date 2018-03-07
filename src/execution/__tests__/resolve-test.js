@@ -7,23 +7,22 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
 import {
   graphql,
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLInt,
-} from '../../';
+  GraphQLInt
+} from "../../";
 
-describe('Execute: resolve function', () => {
-
+describe("Execute: resolve function", () => {
   function testSchema(testField) {
     return new GraphQLSchema({
       query: new GraphQLObjectType({
-        name: 'Query',
+        name: "Query",
         fields: {
           test: testField
         }
@@ -31,71 +30,63 @@ describe('Execute: resolve function', () => {
     });
   }
 
-  it('default function accesses properties', async () => {
+  it("default function accesses properties", async () => {
     const schema = testSchema({ type: GraphQLString });
 
     const source = {
-      test: 'testValue'
+      test: "testValue"
     };
 
-    expect(
-      await graphql(schema, '{ test }', source)
-    ).to.deep.equal({
+    expect(await graphql(schema, "{ test }", source)).to.deep.equal({
       data: {
-        test: 'testValue'
+        test: "testValue"
       }
     });
   });
 
-  it('default function calls methods', async () => {
+  it("default function calls methods", async () => {
     const schema = testSchema({ type: GraphQLString });
 
     const source = {
-      _secret: 'secretValue',
+      _secret: "secretValue",
       test() {
         return this._secret;
       }
     };
 
-    expect(
-      await graphql(schema, '{ test }', source)
-    ).to.deep.equal({
+    expect(await graphql(schema, "{ test }", source)).to.deep.equal({
       data: {
-        test: 'secretValue'
+        test: "secretValue"
       }
     });
   });
 
-  it('uses provided resolve function', async () => {
+  it("uses provided resolve function", async () => {
     const schema = testSchema({
       type: GraphQLString,
       args: {
         aStr: { type: GraphQLString },
-        aInt: { type: GraphQLInt },
+        aInt: { type: GraphQLInt }
       },
       resolve(source, args) {
-        return JSON.stringify([ source, args ]);
+        return JSON.stringify([source, args]);
       }
     });
 
-    expect(
-      await graphql(schema, '{ test }')
-    ).to.deep.equal({
+    expect(await graphql(schema, "{ test }")).to.deep.equal({
       data: {
-        test: '[null,{}]'
+        test: "[null,{}]"
       }
     });
 
-    expect(
-      await graphql(schema, '{ test }', 'Source!')
-    ).to.deep.equal({
+    expect(await graphql(schema, "{ test }", "Source!")).to.deep.equal({
       data: {
         test: '["Source!",{}]'
       }
     });
 
     expect(
-      await graphql(schema, '{ test(aStr: "String!") }', 'Source!')
+      await graphql(schema, '{ test(aStr: "String!") }', "Source!")
     ).to.deep.equal({
       data: {
         test: '["Source!",{"aStr":"String!"}]'
@@ -103,12 +94,11 @@ describe('Execute: resolve function', () => {
     });
 
     expect(
-      await graphql(schema, '{ test(aInt: -123, aStr: "String!") }', 'Source!')
+      await graphql(schema, '{ test(aInt: -123, aStr: "String!") }', "Source!")
     ).to.deep.equal({
       data: {
         test: '["Source!",{"aStr":"String!","aInt":-123}]'
       }
     });
   });
-
 });

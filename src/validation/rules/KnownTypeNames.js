@@ -8,10 +8,9 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import type { GraphQLType } from "../../type/definition";
 
 export function unknownTypeMessage(type: GraphQLType): string {
   return `Unknown type "${type}".`;
@@ -37,7 +36,7 @@ export function KnownTypeNames(context: ValidationContext): any {
       const type = context.getSchema().getType(typeName);
       if (!type) {
         context.reportError(
-          new GraphQLError(unknownTypeMessage(typeName), [ node ])
+          new GraphQLError(unknownTypeMessage(typeName), [node])
         );
       }
     }

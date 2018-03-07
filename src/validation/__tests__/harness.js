@@ -7,10 +7,10 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { parse } from '../../language';
-import { formatError } from '../../error';
-import { validate } from '../validate';
+import { expect } from "chai";
+import { parse } from "../../language";
+import { formatError } from "../../error";
+import { validate } from "../validate";
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -25,60 +25,59 @@ import {
   GraphQLString,
   GraphQLBoolean,
   GraphQLID
-} from '../../type';
+} from "../../type";
 import {
   GraphQLDirective,
   GraphQLIncludeDirective,
-  GraphQLSkipDirective,
-} from '../../type/directives';
-
+  GraphQLSkipDirective
+} from "../../type/directives";
 
 const Being = new GraphQLInterfaceType({
-  name: 'Being',
+  name: "Being",
   fields: () => ({
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     }
-  }),
+  })
 });
 
 const Pet = new GraphQLInterfaceType({
-  name: 'Pet',
+  name: "Pet",
   fields: () => ({
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     }
-  }),
+  })
 });
 
 const Canine = new GraphQLInterfaceType({
-  name: 'Canine',
+  name: "Canine",
   fields: () => ({
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     }
-  }),
+  })
 });
 
 const DogCommand = new GraphQLEnumType({
-  name: 'DogCommand',
+  name: "DogCommand",
   values: {
     SIT: { value: 0 },
     HEEL: { value: 1 },
-    DOWN: { value: 2 },
-  },
+    DOWN: { value: 2 }
+  }
 });
 
 const Dog = new GraphQLObjectType({
-  name: 'Dog',
+  name: "Dog",
   isTypeOf: () => true,
   fields: () => ({
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     },
     nickname: { type: GraphQLString },
     barkVolume: { type: GraphQLInt },
@@ -86,184 +85,184 @@ const Dog = new GraphQLObjectType({
     doesKnowCommand: {
       type: GraphQLBoolean,
       args: {
-        dogCommand: { type: DogCommand },
-      },
+        dogCommand: { type: DogCommand }
+      }
     },
     isHousetrained: {
       type: GraphQLBoolean,
       args: {
         atOtherHomes: {
           type: GraphQLBoolean,
-          defaultValue: true,
+          defaultValue: true
         }
-      },
+      }
     },
     isAtLocation: {
       type: GraphQLBoolean,
-      args: { x: { type: GraphQLInt }, y: { type: GraphQLInt } },
-    },
+      args: { x: { type: GraphQLInt }, y: { type: GraphQLInt } }
+    }
   }),
-  interfaces: [ Being, Pet, Canine ],
+  interfaces: [Being, Pet, Canine]
 });
 
 const Cat = new GraphQLObjectType({
-  name: 'Cat',
+  name: "Cat",
   isTypeOf: () => true,
   fields: () => ({
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     },
     nickname: { type: GraphQLString },
     meows: { type: GraphQLBoolean },
     meowVolume: { type: GraphQLInt },
-    furColor: { type: FurColor },
+    furColor: { type: FurColor }
   }),
-  interfaces: [ Being, Pet ],
+  interfaces: [Being, Pet]
 });
 
 const CatOrDog = new GraphQLUnionType({
-  name: 'CatOrDog',
-  types: [ Dog, Cat ],
+  name: "CatOrDog",
+  types: [Dog, Cat],
   resolveType(/* value */) {
     // not used for validation
   }
 });
 
 const Intelligent = new GraphQLInterfaceType({
-  name: 'Intelligent',
+  name: "Intelligent",
   fields: {
     iq: { type: GraphQLInt }
   }
 });
 
 const Human = new GraphQLObjectType({
-  name: 'Human',
+  name: "Human",
   isTypeOf: () => true,
-  interfaces: [ Being, Intelligent ],
+  interfaces: [Being, Intelligent],
   fields: () => ({
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     },
     pets: { type: new GraphQLList(Pet) },
     relatives: { type: new GraphQLList(Human) },
-    iq: { type: GraphQLInt },
+    iq: { type: GraphQLInt }
   })
 });
 
 const Alien = new GraphQLObjectType({
-  name: 'Alien',
+  name: "Alien",
   isTypeOf: () => true,
-  interfaces: [ Being, Intelligent ],
+  interfaces: [Being, Intelligent],
   fields: {
     iq: { type: GraphQLInt },
     name: {
       type: GraphQLString,
-      args: { surname: { type: GraphQLBoolean } },
+      args: { surname: { type: GraphQLBoolean } }
     },
-    numEyes: { type: GraphQLInt },
+    numEyes: { type: GraphQLInt }
   }
 });
 
 const DogOrHuman = new GraphQLUnionType({
-  name: 'DogOrHuman',
-  types: [ Dog, Human ],
+  name: "DogOrHuman",
+  types: [Dog, Human],
   resolveType(/* value */) {
     // not used for validation
   }
 });
 
 const HumanOrAlien = new GraphQLUnionType({
-  name: 'HumanOrAlien',
-  types: [ Human, Alien ],
+  name: "HumanOrAlien",
+  types: [Human, Alien],
   resolveType(/* value */) {
     // not used for validation
   }
 });
 
 const FurColor = new GraphQLEnumType({
-  name: 'FurColor',
+  name: "FurColor",
   values: {
     BROWN: { value: 0 },
     BLACK: { value: 1 },
     TAN: { value: 2 },
-    SPOTTED: { value: 3 },
-  },
+    SPOTTED: { value: 3 }
+  }
 });
 
 const ComplexInput = new GraphQLInputObjectType({
-  name: 'ComplexInput',
+  name: "ComplexInput",
   fields: {
     requiredField: { type: new GraphQLNonNull(GraphQLBoolean) },
     intField: { type: GraphQLInt },
     stringField: { type: GraphQLString },
     booleanField: { type: GraphQLBoolean },
-    stringListField: { type: new GraphQLList(GraphQLString) },
+    stringListField: { type: new GraphQLList(GraphQLString) }
   }
 });
 
 const ComplicatedArgs = new GraphQLObjectType({
-  name: 'ComplicatedArgs',
+  name: "ComplicatedArgs",
   // TODO List
   // TODO Coercion
   // TODO NotNulls
   fields: () => ({
     intArgField: {
       type: GraphQLString,
-      args: { intArg: { type: GraphQLInt } },
+      args: { intArg: { type: GraphQLInt } }
     },
     nonNullIntArgField: {
       type: GraphQLString,
-      args: { nonNullIntArg: { type: new GraphQLNonNull(GraphQLInt) } },
+      args: { nonNullIntArg: { type: new GraphQLNonNull(GraphQLInt) } }
     },
     stringArgField: {
       type: GraphQLString,
-      args: { stringArg: { type: GraphQLString } },
+      args: { stringArg: { type: GraphQLString } }
     },
     booleanArgField: {
       type: GraphQLString,
-      args: { booleanArg: { type: GraphQLBoolean } },
+      args: { booleanArg: { type: GraphQLBoolean } }
     },
     enumArgField: {
       type: GraphQLString,
-      args: { enumArg: { type: FurColor } },
+      args: { enumArg: { type: FurColor } }
     },
     floatArgField: {
       type: GraphQLString,
-      args: { floatArg: { type: GraphQLFloat } },
+      args: { floatArg: { type: GraphQLFloat } }
     },
     idArgField: {
       type: GraphQLString,
-      args: { idArg: { type: GraphQLID } },
+      args: { idArg: { type: GraphQLID } }
     },
     stringListArgField: {
       type: GraphQLString,
-      args: { stringListArg: { type: new GraphQLList(GraphQLString) } },
+      args: { stringListArg: { type: new GraphQLList(GraphQLString) } }
     },
     complexArgField: {
       type: GraphQLString,
-      args: { complexArg: { type: ComplexInput } },
+      args: { complexArg: { type: ComplexInput } }
     },
     multipleReqs: {
       type: GraphQLString,
       args: {
         req1: { type: new GraphQLNonNull(GraphQLInt) },
-        req2: { type: new GraphQLNonNull(GraphQLInt) },
-      },
+        req2: { type: new GraphQLNonNull(GraphQLInt) }
+      }
     },
     multipleOpts: {
       type: GraphQLString,
       args: {
         opt1: {
           type: GraphQLInt,
-          defaultValue: 0,
+          defaultValue: 0
         },
         opt2: {
           type: GraphQLInt,
-          defaultValue: 0,
-        },
-      },
+          defaultValue: 0
+        }
+      }
     },
     multipleOptAndReq: {
       type: GraphQLString,
@@ -272,20 +271,19 @@ const ComplicatedArgs = new GraphQLObjectType({
         req2: { type: new GraphQLNonNull(GraphQLInt) },
         opt1: {
           type: GraphQLInt,
-          defaultValue: 0,
+          defaultValue: 0
         },
         opt2: {
           type: GraphQLInt,
-          defaultValue: 0,
-        },
-      },
-    },
-  }),
+          defaultValue: 0
+        }
+      }
+    }
+  })
 });
 
-
 const QueryRoot = new GraphQLObjectType({
-  name: 'QueryRoot',
+  name: "QueryRoot",
   fields: () => ({
     human: {
       args: { id: { type: GraphQLID } },
@@ -298,46 +296,46 @@ const QueryRoot = new GraphQLObjectType({
     catOrDog: { type: CatOrDog },
     dogOrHuman: { type: DogOrHuman },
     humanOrAlien: { type: HumanOrAlien },
-    complicatedArgs: { type: ComplicatedArgs },
+    complicatedArgs: { type: ComplicatedArgs }
   })
 });
 
 export const testSchema = new GraphQLSchema({
   query: QueryRoot,
-  types: [ Cat, Dog, Human, Alien ],
+  types: [Cat, Dog, Human, Alien],
   directives: [
     new GraphQLDirective({
-      name: 'operationOnly',
-      locations: [ 'QUERY' ],
+      name: "operationOnly",
+      locations: ["QUERY"]
     }),
     GraphQLIncludeDirective,
-    GraphQLSkipDirective,
+    GraphQLSkipDirective
   ]
 });
 
 function expectValid(schema, rules, queryString) {
   const errors = validate(schema, parse(queryString), rules);
-  expect(errors).to.deep.equal([], 'Should validate');
+  expect(errors).to.deep.equal([], "Should validate");
 }
 
 function expectInvalid(schema, rules, queryString, expectedErrors) {
   const errors = validate(schema, parse(queryString), rules);
-  expect(errors).to.have.length.of.at.least(1, 'Should not validate');
+  expect(errors).to.have.length.of.at.least(1, "Should not validate");
   expect(errors.map(formatError)).to.deep.equal(expectedErrors);
 }
 
 export function expectPassesRule(rule, queryString) {
-  return expectValid(testSchema, [ rule ], queryString);
+  return expectValid(testSchema, [rule], queryString);
 }
 
 export function expectFailsRule(rule, queryString, errors) {
-  return expectInvalid(testSchema, [ rule ], queryString, errors);
+  return expectInvalid(testSchema, [rule], queryString, errors);
 }
 
 export function expectPassesRuleWithSchema(schema, rule, queryString, errors) {
-  return expectValid(schema, [ rule ], queryString, errors);
+  return expectValid(schema, [rule], queryString, errors);
 }
 
 export function expectFailsRuleWithSchema(schema, rule, queryString, errors) {
-  return expectInvalid(schema, [ rule ], queryString, errors);
+  return expectInvalid(schema, [rule], queryString, errors);
 }

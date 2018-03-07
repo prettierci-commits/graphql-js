@@ -8,18 +8,18 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { Source } from './source';
-import { syntaxError } from '../error';
+import type { Source } from "./source";
+import { syntaxError } from "../error";
 
 /**
  * A representation of a lexed Token. Value only appears for non-punctuation
  * tokens: NAME, INT, FLOAT, and STRING.
  */
 export type Token = {
-  kind: number;
-  start: number;
-  end: number;
-  value: ?string;
+  kind: number,
+  start: number,
+  end: number,
+  value: ?string
 };
 
 type Lexer = (resetPosition?: number) => Token;
@@ -68,16 +68,16 @@ export const TokenKind = {
   NAME: 15,
   INT: 16,
   FLOAT: 17,
-  STRING: 18,
+  STRING: 18
 };
 
 /**
  * A helper function to describe a token as a string for debugging
  */
 export function getTokenDesc(token: Token): string {
-  return token.value ?
-    `${getTokenKindDesc(token.kind)} "${token.value}"` :
-    getTokenKindDesc(token.kind);
+  return token.value
+    ? `${getTokenKindDesc(token.kind)} "${token.value}"`
+    : getTokenKindDesc(token.kind);
 }
 
 /**
@@ -88,24 +88,24 @@ export function getTokenKindDesc(kind: number): string {
 }
 
 const tokenDescription = {};
-tokenDescription[TokenKind.EOF] = 'EOF';
-tokenDescription[TokenKind.BANG] = '!';
-tokenDescription[TokenKind.DOLLAR] = '$';
-tokenDescription[TokenKind.PAREN_L] = '(';
-tokenDescription[TokenKind.PAREN_R] = ')';
-tokenDescription[TokenKind.SPREAD] = '...';
-tokenDescription[TokenKind.COLON] = ':';
-tokenDescription[TokenKind.EQUALS] = '=';
-tokenDescription[TokenKind.AT] = '@';
-tokenDescription[TokenKind.BRACKET_L] = '[';
-tokenDescription[TokenKind.BRACKET_R] = ']';
-tokenDescription[TokenKind.BRACE_L] = '{';
-tokenDescription[TokenKind.PIPE] = '|';
-tokenDescription[TokenKind.BRACE_R] = '}';
-tokenDescription[TokenKind.NAME] = 'Name';
-tokenDescription[TokenKind.INT] = 'Int';
-tokenDescription[TokenKind.FLOAT] = 'Float';
-tokenDescription[TokenKind.STRING] = 'String';
+tokenDescription[TokenKind.EOF] = "EOF";
+tokenDescription[TokenKind.BANG] = "!";
+tokenDescription[TokenKind.DOLLAR] = "$";
+tokenDescription[TokenKind.PAREN_L] = "(";
+tokenDescription[TokenKind.PAREN_R] = ")";
+tokenDescription[TokenKind.SPREAD] = "...";
+tokenDescription[TokenKind.COLON] = ":";
+tokenDescription[TokenKind.EQUALS] = "=";
+tokenDescription[TokenKind.AT] = "@";
+tokenDescription[TokenKind.BRACKET_L] = "[";
+tokenDescription[TokenKind.BRACKET_R] = "]";
+tokenDescription[TokenKind.BRACE_L] = "{";
+tokenDescription[TokenKind.PIPE] = "|";
+tokenDescription[TokenKind.BRACE_R] = "}";
+tokenDescription[TokenKind.NAME] = "Name";
+tokenDescription[TokenKind.INT] = "Int";
+tokenDescription[TokenKind.FLOAT] = "Float";
+tokenDescription[TokenKind.STRING] = "String";
 
 const charCodeAt = String.prototype.charCodeAt;
 const slice = String.prototype.slice;
@@ -125,11 +125,13 @@ function makeToken(
 function printCharCode(code) {
   return (
     // NaN/undefined represents access beyond the end of the file.
-    isNaN(code) ? '<EOF>' :
-    // Trust JSON for ASCII.
-    code < 0x007F ? JSON.stringify(String.fromCharCode(code)) :
-    // Otherwise print the escaped form.
-    `"\\u${('00' + code.toString(16).toUpperCase()).slice(-4)}"`
+    isNaN(code)
+      ? "<EOF>"
+      : // Trust JSON for ASCII.
+        code < 0x007f
+        ? JSON.stringify(String.fromCharCode(code))
+        : // Otherwise print the escaped form.
+          `"\\u${("00" + code.toString(16).toUpperCase()).slice(-4)}"`
   );
 }
 
@@ -153,7 +155,7 @@ function readToken(source: Source, fromPosition: number): Token {
   const code = charCodeAt.call(body, position);
 
   // SourceCharacter
-  if (code < 0x0020 && code !== 0x0009 && code !== 0x000A && code !== 0x000D) {
+  if (code < 0x0020 && code !== 0x0009 && code !== 0x000a && code !== 0x000d) {
     throw syntaxError(
       source,
       position,
@@ -163,57 +165,124 @@ function readToken(source: Source, fromPosition: number): Token {
 
   switch (code) {
     // !
-    case 33: return makeToken(TokenKind.BANG, position, position + 1);
+    case 33:
+      return makeToken(TokenKind.BANG, position, position + 1);
     // $
-    case 36: return makeToken(TokenKind.DOLLAR, position, position + 1);
+    case 36:
+      return makeToken(TokenKind.DOLLAR, position, position + 1);
     // (
-    case 40: return makeToken(TokenKind.PAREN_L, position, position + 1);
+    case 40:
+      return makeToken(TokenKind.PAREN_L, position, position + 1);
     // )
-    case 41: return makeToken(TokenKind.PAREN_R, position, position + 1);
+    case 41:
+      return makeToken(TokenKind.PAREN_R, position, position + 1);
     // .
     case 46:
-      if (charCodeAt.call(body, position + 1) === 46 &&
-          charCodeAt.call(body, position + 2) === 46) {
+      if (
+        charCodeAt.call(body, position + 1) === 46 &&
+        charCodeAt.call(body, position + 2) === 46
+      ) {
         return makeToken(TokenKind.SPREAD, position, position + 3);
       }
       break;
     // :
-    case 58: return makeToken(TokenKind.COLON, position, position + 1);
+    case 58:
+      return makeToken(TokenKind.COLON, position, position + 1);
     // =
-    case 61: return makeToken(TokenKind.EQUALS, position, position + 1);
+    case 61:
+      return makeToken(TokenKind.EQUALS, position, position + 1);
     // @
-    case 64: return makeToken(TokenKind.AT, position, position + 1);
+    case 64:
+      return makeToken(TokenKind.AT, position, position + 1);
     // [
-    case 91: return makeToken(TokenKind.BRACKET_L, position, position + 1);
+    case 91:
+      return makeToken(TokenKind.BRACKET_L, position, position + 1);
     // ]
-    case 93: return makeToken(TokenKind.BRACKET_R, position, position + 1);
+    case 93:
+      return makeToken(TokenKind.BRACKET_R, position, position + 1);
     // {
-    case 123: return makeToken(TokenKind.BRACE_L, position, position + 1);
+    case 123:
+      return makeToken(TokenKind.BRACE_L, position, position + 1);
     // |
-    case 124: return makeToken(TokenKind.PIPE, position, position + 1);
+    case 124:
+      return makeToken(TokenKind.PIPE, position, position + 1);
     // }
-    case 125: return makeToken(TokenKind.BRACE_R, position, position + 1);
+    case 125:
+      return makeToken(TokenKind.BRACE_R, position, position + 1);
     // A-Z
-    case 65: case 66: case 67: case 68: case 69: case 70: case 71: case 72:
-    case 73: case 74: case 75: case 76: case 77: case 78: case 79: case 80:
-    case 81: case 82: case 83: case 84: case 85: case 86: case 87: case 88:
-    case 89: case 90:
+    case 65:
+    case 66:
+    case 67:
+    case 68:
+    case 69:
+    case 70:
+    case 71:
+    case 72:
+    case 73:
+    case 74:
+    case 75:
+    case 76:
+    case 77:
+    case 78:
+    case 79:
+    case 80:
+    case 81:
+    case 82:
+    case 83:
+    case 84:
+    case 85:
+    case 86:
+    case 87:
+    case 88:
+    case 89:
+    case 90:
     // _
     case 95:
     // a-z
-    case 97: case 98: case 99: case 100: case 101: case 102: case 103: case 104:
-    case 105: case 106: case 107: case 108: case 109: case 110: case 111:
-    case 112: case 113: case 114: case 115: case 116: case 117: case 118:
-    case 119: case 120: case 121: case 122:
+    case 97:
+    case 98:
+    case 99:
+    case 100:
+    case 101:
+    case 102:
+    case 103:
+    case 104:
+    case 105:
+    case 106:
+    case 107:
+    case 108:
+    case 109:
+    case 110:
+    case 111:
+    case 112:
+    case 113:
+    case 114:
+    case 115:
+    case 116:
+    case 117:
+    case 118:
+    case 119:
+    case 120:
+    case 121:
+    case 122:
       return readName(source, position);
     // -
     case 45:
     // 0-9
-    case 48: case 49: case 50: case 51: case 52:
-    case 53: case 54: case 55: case 56: case 57:
+    case 48:
+    case 49:
+    case 50:
+    case 51:
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
       return readNumber(source, position, code);
     // "
-    case 34: return readString(source, position);
+    case 34:
+      return readString(source, position);
   }
 
   throw syntaxError(
@@ -236,25 +305,28 @@ function positionAfterWhitespace(body: string, startPosition: number): number {
     // Skip Ignored
     if (
       // BOM
-      code === 0xFEFF ||
+      code === 0xfeff ||
       // White Space
       code === 0x0009 || // tab
       code === 0x0020 || // space
       // Line Terminator
-      code === 0x000A || // new line
-      code === 0x000D || // carriage return
+      code === 0x000a || // new line
+      code === 0x000d || // carriage return
       // Comma
-      code === 0x002C
+      code === 0x002c
     ) {
       ++position;
-    // Skip comments
-    } else if (code === 35) { // #
+      // Skip comments
+    } else if (code === 35) {
+      // #
       ++position;
       while (
         position < bodyLength &&
         (code = charCodeAt.call(body, position)) !== null &&
         // SourceCharacter but not LineTerminator
-        (code > 0x001F || code === 0x0009) && code !== 0x000A && code !== 0x000D
+        (code > 0x001f || code === 0x0009) &&
+        code !== 0x000a &&
+        code !== 0x000d
       ) {
         ++position;
       }
@@ -278,11 +350,13 @@ function readNumber(source, start, firstCode) {
   let position = start;
   let isFloat = false;
 
-  if (code === 45) { // -
+  if (code === 45) {
+    // -
     code = charCodeAt.call(body, ++position);
   }
 
-  if (code === 48) { // 0
+  if (code === 48) {
+    // 0
     code = charCodeAt.call(body, ++position);
     if (code >= 48 && code <= 57) {
       throw syntaxError(
@@ -296,7 +370,8 @@ function readNumber(source, start, firstCode) {
     code = charCodeAt.call(body, position);
   }
 
-  if (code === 46) { // .
+  if (code === 46) {
+    // .
     isFloat = true;
 
     code = charCodeAt.call(body, ++position);
@@ -304,11 +379,13 @@ function readNumber(source, start, firstCode) {
     code = charCodeAt.call(body, position);
   }
 
-  if (code === 69 || code === 101) { // E e
+  if (code === 69 || code === 101) {
+    // E e
     isFloat = true;
 
     code = charCodeAt.call(body, ++position);
-    if (code === 43 || code === 45) { // + -
+    if (code === 43 || code === 45) {
+      // + -
       code = charCodeAt.call(body, ++position);
     }
     position = readDigits(source, position, code);
@@ -329,7 +406,8 @@ function readDigits(source, start, firstCode) {
   const body = source.body;
   let position = start;
   let code = firstCode;
-  if (code >= 48 && code <= 57) { // 0 - 9
+  if (code >= 48 && code <= 57) {
+    // 0 - 9
     do {
       code = charCodeAt.call(body, ++position);
     } while (code >= 48 && code <= 57); // 0 - 9
@@ -352,13 +430,14 @@ function readString(source, start) {
   let position = start + 1;
   let chunkStart = position;
   let code = 0;
-  let value = '';
+  let value = "";
 
   while (
     position < body.length &&
     (code = charCodeAt.call(body, position)) !== null &&
     // not LineTerminator
-    code !== 0x000A && code !== 0x000D &&
+    code !== 0x000a &&
+    code !== 0x000d &&
     // not Quote (")
     code !== 34
   ) {
@@ -372,18 +451,35 @@ function readString(source, start) {
     }
 
     ++position;
-    if (code === 92) { // \
+    if (code === 92) {
+      // \
       value += slice.call(body, chunkStart, position - 1);
       code = charCodeAt.call(body, position);
       switch (code) {
-        case 34: value += '"'; break;
-        case 47: value += '\/'; break;
-        case 92: value += '\\'; break;
-        case 98: value += '\b'; break;
-        case 102: value += '\f'; break;
-        case 110: value += '\n'; break;
-        case 114: value += '\r'; break;
-        case 116: value += '\t'; break;
+        case 34:
+          value += '"';
+          break;
+        case 47:
+          value += "/";
+          break;
+        case 92:
+          value += "\\";
+          break;
+        case 98:
+          value += "\b";
+          break;
+        case 102:
+          value += "\f";
+          break;
+        case 110:
+          value += "\n";
+          break;
+        case 114:
+          value += "\r";
+          break;
+        case 116:
+          value += "\t";
+          break;
         case 117: // u
           const charCode = uniCharCode(
             charCodeAt.call(body, position + 1),
@@ -395,8 +491,8 @@ function readString(source, start) {
             throw syntaxError(
               source,
               position,
-              'Invalid character escape sequence: ' +
-              `\\u${body.slice(position + 1, position + 5)}.`
+              "Invalid character escape sequence: " +
+                `\\u${body.slice(position + 1, position + 5)}.`
             );
           }
           value += String.fromCharCode(charCode);
@@ -414,8 +510,9 @@ function readString(source, start) {
     }
   }
 
-  if (code !== 34) { // quote (")
-    throw syntaxError(source, position, 'Unterminated string.');
+  if (code !== 34) {
+    // quote (")
+    throw syntaxError(source, position, "Unterminated string.");
   }
 
   value += slice.call(body, chunkStart, position);
@@ -433,7 +530,9 @@ function readString(source, start) {
  * which means the result of ORing the char2hex() will also be negative.
  */
 function uniCharCode(a, b, c, d) {
-  return char2hex(a) << 12 | char2hex(b) << 8 | char2hex(c) << 4 | char2hex(d);
+  return (
+    (char2hex(a) << 12) | (char2hex(b) << 8) | (char2hex(c) << 4) | char2hex(d)
+  );
 }
 
 /**
@@ -445,12 +544,13 @@ function uniCharCode(a, b, c, d) {
  * Returns -1 on error.
  */
 function char2hex(a) {
-  return (
-    a >= 48 && a <= 57 ? a - 48 : // 0-9
-    a >= 65 && a <= 70 ? a - 55 : // A-F
-    a >= 97 && a <= 102 ? a - 87 : // a-f
-    -1
-  );
+  return a >= 48 && a <= 57
+    ? a - 48 // 0-9
+    : a >= 65 && a <= 70
+      ? a - 55 // A-F
+      : a >= 97 && a <= 102
+        ? a - 87 // a-f
+        : -1;
 }
 
 /**
@@ -466,12 +566,10 @@ function readName(source, position) {
   while (
     end !== bodyLength &&
     (code = charCodeAt.call(body, end)) !== null &&
-    (
-      code === 95 || // _
-      code >= 48 && code <= 57 || // 0-9
-      code >= 65 && code <= 90 || // A-Z
-      code >= 97 && code <= 122 // a-z
-    )
+    (code === 95 || // _
+    (code >= 48 && code <= 57) || // 0-9
+    (code >= 65 && code <= 90) || // A-Z
+      (code >= 97 && code <= 122)) // a-z
   ) {
     ++end;
   }

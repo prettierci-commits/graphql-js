@@ -8,9 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { OPERATION_DEFINITION } from '../language/kinds';
-import type { Document, OperationDefinition } from '../language/ast';
-
+import { OPERATION_DEFINITION } from "../language/kinds";
+import type { Document, OperationDefinition } from "../language/ast";
 
 /**
  * Returns an operation AST given a document AST and optionally an operation

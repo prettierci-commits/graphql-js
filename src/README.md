@@ -1,5 +1,4 @@
-GraphQL JS
-----------
+## GraphQL JS
 
 The primary `graphql` module includes everything you need to define a GraphQL
 schema and fulfill GraphQL requests.

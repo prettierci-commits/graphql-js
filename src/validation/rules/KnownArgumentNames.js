@@ -8,24 +8,22 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import type { ValidationContext } from '../index';
-import { GraphQLError } from '../../error';
-import find from '../../jsutils/find';
-import invariant from '../../jsutils/invariant';
-import {
-  FIELD,
-  DIRECTIVE
-} from '../../language/kinds';
-import type { GraphQLType } from '../../type/definition';
-
+import type { ValidationContext } from "../index";
+import { GraphQLError } from "../../error";
+import find from "../../jsutils/find";
+import invariant from "../../jsutils/invariant";
+import { FIELD, DIRECTIVE } from "../../language/kinds";
+import type { GraphQLType } from "../../type/definition";
 
 export function unknownArgMessage(
   argName: string,
   fieldName: string,
   type: GraphQLType
 ): string {
-  return `Unknown argument "${argName}" on field "${fieldName}" of ` +
-    `type "${type}".`;
+  return (
+    `Unknown argument "${argName}" on field "${fieldName}" of ` +
+    `type "${type}".`
+  );
 }
 
 export function unknownDirectiveArgMessage(
@@ -55,14 +53,16 @@ export function KnownArgumentNames(context: ValidationContext): any {
           if (!fieldArgDef) {
             const parentType = context.getParentType();
             invariant(parentType);
-            context.reportError(new GraphQLError(
-              unknownArgMessage(
-                node.name.value,
-                fieldDef.name,
-                parentType.name
-              ),
-              [ node ]
-            ));
+            context.reportError(
+              new GraphQLError(
+                unknownArgMessage(
+                  node.name.value,
+                  fieldDef.name,
+                  parentType.name
+                ),
+                [node]
+              )
+            );
           }
         }
       } else if (argumentOf.kind === DIRECTIVE) {
@@ -73,10 +73,12 @@ export function KnownArgumentNames(context: ValidationContext): any {
             arg => arg.name === node.name.value
           );
           if (!directiveArgDef) {
-            context.reportError(new GraphQLError(
-              unknownDirectiveArgMessage(node.name.value, directive.name),
-              [ node ]
-            ));
+            context.reportError(
+              new GraphQLError(
+                unknownDirectiveArgMessage(node.name.value, directive.name),
+                [node]
+              )
+            );
           }
         }
       }
